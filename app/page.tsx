@@ -1,65 +1,80 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import SportSelection from '@/components/SportSelection/SportSelection';
+
+type WorkflowStep =
+  | 'sport-selection'
+  | 'competition-selection'
+  | 'venue-selection'
+  | 'parameters-selection'
+  | 'style-selection'
+  | 'preview'
+  | 'generate'
+  | 'export';
+
+interface WorkflowState {
+  step: WorkflowStep;
+  sport?: string;
+  competition?: string;
+  venue?: string;
+}
 
 export default function Home() {
+  const [workflow, setWorkflow] = useState<WorkflowState>({
+    step: 'sport-selection',
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSportSelect = async (sport: string) => {
+    setLoading(true);
+    try {
+      // TODO: Load competitions for selected sport
+      setWorkflow({
+        step: 'competition-selection',
+        sport,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen">
+      {workflow.step === 'sport-selection' && (
+        <SportSelection onSelect={handleSportSelect} loading={loading} />
+      )}
+
+      {workflow.step === 'competition-selection' && (
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <h2 className="text-4xl font-serif font-bold text-white mb-4">
+            Select a Competition
+          </h2>
+          <p className="text-amber-500 mb-8">
+            Choose from available competitions for {workflow.sport}
           </p>
+          {/* Competition selection will be implemented here */}
+          <div className="text-center text-white">
+            Coming soon...
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      )}
+
+      {/* Workflow progress indicator */}
+      <div className="fixed bottom-8 right-8 bg-black/80 border border-amber-700 rounded-lg p-4 text-sm text-amber-500">
+        <div className="font-semibold mb-2">Workflow Progress</div>
+        <div className="space-y-1 text-xs">
+          <div className={workflow.step === 'sport-selection' ? 'text-amber-400' : 'text-slate-500'}>
+            ✓ Sport Selection
+          </div>
+          <div className={workflow.step === 'competition-selection' ? 'text-amber-400' : 'text-slate-500'}>
+            ○ Competition Selection
+          </div>
+          <div className={['venue-selection', 'parameters-selection', 'style-selection', 'preview', 'generate', 'export'].includes(workflow.step) ? 'text-amber-400' : 'text-slate-500'}>
+            ○ Venue Selection
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Iconic Sports Complexes - Museum Quality Poster Generator
 
-## Getting Started
+A professional cross-platform web application for generating museum-quality, premium sporting venue posters suitable for commercial printing, fine art galleries, and online marketplaces like Etsy.
 
-First, run the development server:
+## 🎨 Features
+
+- **Sport Selection**: Curated list of major sports with custom sport entry
+- **Smart Database Management**: Excel-based offline database with automatic updates
+- **Multiple Venue Parameters**: 30+ customizable poster elements
+- **AI-Powered Design**: Museum-quality layouts with intelligent typography and composition
+- **Multiple Export Formats**: 
+  - Vector: PDF, SVG, EPS
+  - Raster: PNG, JPEG, TIFF
+- **Professional Print Options**:
+  - Multiple paper sizes (A0-A6, Imperial)
+  - Adjustable resolution (150-600 DPI)
+  - CMYK/RGB color modes
+  - Bleed, crop marks, and safe margins
+- **One-Click Publishing**:
+  - Print package
+  - Marketplace package (Etsy-ready)
+  - Social media package
+  - Marketing mockups
+  - Metadata generation
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ and npm/yarn/bun
+- Git
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone https://github.com/yourusername/iconic-sports-complexes.git
+cd iconic-sports-complexes
+
+# Install dependencies
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Start the development server
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Open browser to http://localhost:3000
+```
 
-## Learn More
+### Build for Production
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Build the application
+npm run build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start production server
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📊 Supported Sports
 
-## Deploy on Vercel
+### Preset Sports
+- Formula 1
+- Football Stadiums
+- Cricket Grounds
+- Tennis Venues
+- Golf Courses
+- Rugby Stadiums
+- Olympic Venues
+- Boxing Arenas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Custom Sports
+Add any sport dynamically (Swimming, Badminton, Baseball, Basketball, etc.)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗂️ Project Structure
+
+```
+iconic-sports-complexes/
+├── app/
+│   ├── api/               # API routes
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Main workflow
+│   └── globals.css        # Global styles
+├── components/
+│   ├── SportSelection/    # Sport selector
+│   ├── CompetitionSelection/
+│   ├── VenueSelection/
+│   ├── ParameterSelection/
+│   ├── StyleSelection/
+│   ├── Preview/
+│   └── Export/
+├── lib/
+│   ├── types/             # TypeScript interfaces
+│   ├── database/          # Excel handling
+│   └── poster/            # Generation engine
+├── public/
+│   └── databases/         # Excel data files
+└── package.json
+```
+
+## 🎭 Workflow
+
+1. **Sport Selection** - Choose from presets or add custom sport
+2. **Competition Selection** - Pick competition for the sport
+3. **Venue Selection** - Choose specific venue
+4. **Parameters Selection** - Select poster elements (30+)
+5. **Style Selection** - AI generates 3 design concepts
+6. **Preview** - Review poster with frame options
+7. **Generate** - Create final artwork
+8. **Export** - Multiple formats and sizes
+
+## 📦 Export Options
+
+### Sizes: A0-A6, 11×14 to 30×40, Custom
+### Resolutions: 150, 300, 600 DPI
+### Formats: PDF, SVG, EPS, PNG, JPEG, TIFF
+### Print: CMYK/RGB, Bleed, Crop Marks, ICC Profile
+
+## 📚 Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
