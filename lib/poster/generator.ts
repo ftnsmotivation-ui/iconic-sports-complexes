@@ -231,7 +231,7 @@ export class PosterGenerator {
     const x = this.dimensions.width / 2 - boxWidth / 2;
 
     const moments = this.venue.iconicMoments?.slice(0, 2) || [];
-    const momentTexts = moments.map((m, i) => [`MOMENT ${i + 1}`, m]);
+    const momentTexts: Array<[string, string]> = moments.map((m, i) => [`MOMENT ${i + 1}`, m]);
 
     this.addFactBox(svg, x, startY, boxWidth, boxHeight, 'ICONIC MOMENTS', momentTexts);
   }
