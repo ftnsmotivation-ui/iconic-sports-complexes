@@ -113,7 +113,7 @@ export default function SportSelection({
       {/* Continue Button */}
       <button
         onClick={handleContinue}
-        disabled={!selectedSport && !otherSport || loading}
+        disabled={(!selectedSport && !otherSport) || loading}
         className="w-full py-3 px-6 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Loading...' : 'Continue to Competitions'}
