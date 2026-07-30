@@ -4,13 +4,13 @@ import { useState } from 'react';
 
 const PRESET_SPORTS = [
   'Formula 1',
-  'Football Stadiums',
-  'Cricket Grounds',
-  'Tennis Venues',
-  'Golf Courses',
-  'Rugby Stadiums',
+  'Football',
+  'Cricket',
+  'Tennis',
+  'Golf',
+  'Rugby',
   'Olympic Venues',
-  'Boxing Arenas',
+  'Boxing',
 ];
 
 interface SportSelectionProps {
@@ -104,8 +104,8 @@ export default function SportSelection({
       {showOther && otherSport && (
         <div className="bg-amber-900/20 border border-amber-700 rounded-lg p-6 mb-8">
           <p className="text-amber-500 text-sm">
-            <span className="font-semibold">Note:</span> If "{otherSport}" is not in our database,
-            we'll offer to download iconic venues and add them automatically.
+            <span className="font-semibold">Note:</span> If &quot;{otherSport}&quot; is not in our database,
+            we&apos;ll offer to download iconic venues and add them automatically.
           </p>
         </div>
       )}

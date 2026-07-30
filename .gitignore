@@ -60,6 +60,7 @@ ehthumbs.db
 # Cache
 .cache/
 .eslintcache
+*.tsbuildinfo
 
 # Temporary
 tmp/

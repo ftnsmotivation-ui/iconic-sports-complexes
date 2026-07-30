@@ -1,6 +1,24 @@
 import * as XLSX from 'xlsx';
 import { Venue } from '@/lib/types';
 
+interface ExcelVenueRow {
+  sport: string;
+  competition: string;
+  venueName: string;
+  city: string;
+  country: string;
+  countryFlag: string;
+  opened: string | number;
+  capacity: string | number;
+  lat: string | number;
+  lng: string | number;
+  architect?: string;
+  surface?: string;
+  venueMap?: string;
+  compassRose?: string | boolean;
+  [key: string]: unknown;
+}
+
 export async function loadVenuesFromExcel(filePath: string): Promise<Map<string, Venue[]>> {
   try {
     const workbook = XLSX.readFile(filePath);
@@ -8,7 +26,7 @@ export async function loadVenuesFromExcel(filePath: string): Promise<Map<string,
 
     for (const sheetName of workbook.SheetNames) {
       const worksheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json<any>(worksheet);
+      const data = XLSX.utils.sheet_to_json<ExcelVenueRow>(worksheet);
 
       const venues: Venue[] = data.map(row => ({
         sport: row.sport || sheetName,
@@ -17,35 +35,35 @@ export async function loadVenuesFromExcel(filePath: string): Promise<Map<string,
         city: row.city || '',
         country: row.country || '',
         countryFlag: row.countryFlag || '',
-        opened: parseInt(row.opened) || 0,
-        capacity: parseInt(row.capacity) || 0,
+        opened: parseInt(String(row.opened)) || 0,
+        capacity: parseInt(String(row.capacity)) || 0,
         coordinates: {
-          lat: parseFloat(row.lat) || 0,
-          lng: parseFloat(row.lng) || 0,
+          lat: parseFloat(String(row.lat)) || 0,
+          lng: parseFloat(String(row.lng)) || 0,
         },
-        architect: row.architect,
-        surface: row.surface,
-        venueMap: row.venueMap,
+        architect: row.architect as string | undefined,
+        surface: row.surface as string | undefined,
+        venueMap: row.venueMap as string | undefined,
         compassRose: row.compassRose === 'true' || row.compassRose === true,
-        heroIllustration: row.heroIllustration,
+        heroIllustration: row.heroIllustration as string | undefined,
         colourTheme: {
-          primary: row.themePrimary || '#1a1a1a',
-          secondary: row.themeSecondary || '#c41e3a',
-          accent: row.themeAccent || '#d4af37',
+          primary: (row.themePrimary as string) || '#1a1a1a',
+          secondary: (row.themeSecondary as string) || '#c41e3a',
+          accent: (row.themeAccent as string) || '#d4af37',
         },
-        famousFor: (row.famousFor || '').split(',').map((s: string) => s.trim()),
-        iconicMoments: (row.iconicMoments || '').split('|').map((s: string) => s.trim()),
-        raceDistance: parseFloat(row.raceDistance),
-        numberOfTurns: parseInt(row.numberOfTurns),
-        altitude: parseInt(row.altitude),
-        elevationProfile: row.elevationProfile,
-        historicRecords: row.historicRecords ? JSON.parse(row.historicRecords) : {},
-        nickname: row.nickname,
-        notableEvents: (row.notableEvents || '').split('|').map((s: string) => s.trim()),
-        championshipHistory: (row.championshipHistory || '').split('|').map((s: string) => s.trim()),
-        venueLogo: row.venueLogo,
-        clubLogo: row.clubLogo,
-        collectorNumber: parseInt(row.collectorNumber),
+        famousFor: ((row.famousFor as string) || '').split(',').map((s: string) => s.trim()),
+        iconicMoments: ((row.iconicMoments as string) || '').split('|').map((s: string) => s.trim()),
+        raceDistance: parseFloat(row.raceDistance as string),
+        numberOfTurns: parseInt(row.numberOfTurns as string),
+        altitude: parseInt(row.altitude as string),
+        elevationProfile: row.elevationProfile as string | undefined,
+        historicRecords: typeof row.historicRecords === 'string' ? JSON.parse(row.historicRecords) : {},
+        nickname: row.nickname as string | undefined,
+        notableEvents: ((row.notableEvents as string) || '').split('|').map((s: string) => s.trim()),
+        championshipHistory: ((row.championshipHistory as string) || '').split('|').map((s: string) => s.trim()),
+        venueLogo: row.venueLogo as string | undefined,
+        clubLogo: row.clubLogo as string | undefined,
+        collectorNumber: parseInt(row.collectorNumber as string),
       }));
 
       venuesByStport.set(sheetName, venues);

@@ -1,22 +1,18 @@
 import { NextResponse } from 'next/server';
-import * as XLSX from 'xlsx';
-import fs from 'fs';
-import path from 'path';
+import { databaseExists, getSports } from '@/lib/database/workbook';
 
 export async function GET() {
   try {
-    const dbPath = path.join(process.cwd(), 'public/databases/iconic-venues.xlsx');
-
-    if (!fs.existsSync(dbPath)) {
+    if (!databaseExists()) {
       return NextResponse.json({ error: 'Database not found' }, { status: 404 });
     }
 
-    const workbook = XLSX.readFile(dbPath);
-    const sports = workbook.SheetNames;
-
-    return NextResponse.json({ sports });
+    return NextResponse.json({ sports: getSports() });
   } catch (error) {
     console.error('Error loading sports:', error);
-    return NextResponse.json({ error: 'Failed to load sports' }, { status: 500 });
+    return NextResponse.json({
+      error: 'Failed to load sports',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }

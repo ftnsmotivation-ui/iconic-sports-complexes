@@ -1,0 +1,8 @@
+node_modules
+.next
+build
+dist
+*.config.js
+populate-*.js
+expand-*.js
+create-*.js

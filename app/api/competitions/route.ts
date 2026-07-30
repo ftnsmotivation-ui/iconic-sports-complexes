@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import * as XLSX from 'xlsx';
-import fs from 'fs';
-import path from 'path';
+import { databaseExists, getCompetitions, getSports } from '@/lib/database/workbook';
 
 export async function GET(request: Request) {
   try {
@@ -12,20 +10,24 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Sport parameter required' }, { status: 400 });
     }
 
-    const dbPath = path.join(process.cwd(), 'public/databases/iconic-venues.xlsx');
-    const workbook = XLSX.readFile(dbPath);
-    const worksheet = workbook.Sheets[sport];
-
-    if (!worksheet) {
-      return NextResponse.json({ error: 'Sport not found' }, { status: 404 });
+    if (!databaseExists()) {
+      return NextResponse.json({ error: 'Database not found' }, { status: 404 });
     }
 
-    const data = XLSX.utils.sheet_to_json(worksheet);
-    const competitions = [...new Set(data.map((row: any) => row.competition))];
+    const competitions = getCompetitions(sport);
+
+    if (!competitions) {
+      return NextResponse.json({
+        error: `Sport "${sport}" not found. Available: ${getSports().join(', ')}`
+      }, { status: 404 });
+    }
 
     return NextResponse.json({ competitions });
   } catch (error) {
     console.error('Error loading competitions:', error);
-    return NextResponse.json({ error: 'Failed to load competitions' }, { status: 500 });
+    return NextResponse.json({
+      error: 'Failed to load competitions',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
