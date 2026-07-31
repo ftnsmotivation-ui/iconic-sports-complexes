@@ -1,11 +1,11 @@
 import type { VenueDNA } from "../DNA";
-import type { ThemeProfile } from "../Themes";
+import type { PosterTheme } from "../Themes";
 import type { LayoutProfile } from "../Layouts";
 import type { IllustrationProfile } from "./IllustrationTypes";
 
 export function buildPrompt(
   dna: VenueDNA,
-  theme: ThemeProfile,
+  theme: PosterTheme,
   layout: LayoutProfile,
   illustration: IllustrationProfile,
 ): string {
@@ -16,10 +16,15 @@ Venue personality:
 ${dna.primaryStyle}
 
 Colour palette:
-${theme.colours.join(", ")}
+
+Primary: ${theme.colours.primary}
+Secondary: ${theme.colours.secondary}
+Accent: ${theme.colours.accent}
 
 Typography:
-${theme.typography}
+
+Title Font: ${theme.titleFont}
+Body Font: ${theme.bodyFont}
 
 Layout:
 ${layout.name}

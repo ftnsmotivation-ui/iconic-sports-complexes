@@ -1,6 +1,6 @@
-import type { PosterLayout } from "./LayoutTypes";
+import type { LayoutProfile } from "./LayoutTypes";
 
-export const layoutProfiles: Record<string, PosterLayout> = {
+export const layoutProfiles: Record<string, LayoutProfile> = {
   collector: {
     id: "collector",
 

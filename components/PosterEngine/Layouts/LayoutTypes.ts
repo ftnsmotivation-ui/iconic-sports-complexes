@@ -13,7 +13,7 @@ export interface LayoutRegion {
   height: number;
 }
 
-export interface PosterLayout {
+export interface LayoutProfile {
   id: string;
 
   name: string;

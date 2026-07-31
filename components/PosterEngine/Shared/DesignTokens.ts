@@ -120,7 +120,7 @@ export const PosterDimensions = {
 } as const;
 
 export const PosterDesignTokens = {
-  colours: PosterColours,
+  colours: posterColours,
   typography: PosterTypography,
   spacing: PosterSpacing,
   borders: PosterBorders,

@@ -1,11 +1,11 @@
 import { defaultLayout, layoutProfiles } from "./LayoutProfiles";
 
-import type { PosterLayout } from "./LayoutTypes";
+import type { LayoutProfile } from "./LayoutTypes";
 import type { VenueDNA } from "../DNA";
 
 export function resolveLayout(
   dna: VenueDNA,
-): PosterLayout {
+): LayoutProfile {
   switch (dna.primaryStyle) {
     case "Collector":
       return layoutProfiles.collector;
