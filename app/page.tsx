@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SportSelection from '@/components/SportSelection/SportSelection';
 import PosterDisplay, { PersonalisationData } from '@/components/PosterGenerator/PosterDisplay';
+import CinematicHeroPoster from '@/components/PosterGenerator/CinematicHeroPoster';
 import PreviewFrame, { ExportOptions } from '@/components/PreviewFrame/PreviewFrame';
 import ParameterSelection from '@/components/ParameterSelection/ParameterSelection';
 import StyleSelection from '@/components/StyleSelection/StyleSelection';
@@ -151,65 +152,17 @@ export default function Home() {
     setStep('personalisation');
   };
 
-  const handleExport = async (format: 'pdf' | 'png' | 'svg' | 'jpeg', options: ExportOptions) => {
-    if (!selectedVenue) return;
+  const handleExport = async (
+  format: 'pdf' | 'png' | 'svg' | 'jpeg',
+  options: ExportOptions
+) => {
+  if (!selectedVenue) return;
 
-    try {
-      setLoading(true);
-      const svgElement = document.querySelector('svg');
-      if (!svgElement) {
-        throw new Error('Poster not found on page');
-      }
-
-      const filename = `${selectedVenue.venueName.replace(/\s+/g, '-').toLowerCase()}-poster`;
-
-      const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
-      clonedSvg.setAttribute('width', '800');
-      clonedSvg.setAttribute('height', '1100');
-      clonedSvg.setAttribute('viewBox', '0 0 800 1100');
-      clonedSvg.removeAttribute('class');
-      clonedSvg.removeAttribute('style');
-
-      const svgString = new XMLSerializer().serializeToString(clonedSvg);
-
-      switch (format) {
-        case 'pdf': {
-          const pdfResponse = await fetch('/api/export/pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              svgContent: svgString,
-              filename,
-              widthIn: options.widthIn,
-              heightIn: options.heightIn,
-              bleed: options.bleed,
-              cropMarks: options.cropMarks,
-            }),
-          });
-          if (!pdfResponse.ok) throw new Error('PDF export failed');
-          const pdfBlob = await pdfResponse.blob();
-          downloadBlob(pdfBlob, `${filename}.pdf`);
-          break;
-        }
-
-        case 'png':
-        case 'jpeg':
-          await exportToRaster(svgString, filename, format, options);
-          break;
-
-        case 'svg': {
-          const svgBlob = new Blob([svgString], { type: 'image/svg+xml' });
-          downloadBlob(svgBlob, `${filename}.svg`);
-          break;
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Export failed');
-      console.error('Export error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setError(
+    `The new collector poster is working, but ${format.toUpperCase()} export is being upgraded for the new renderer.`
+  );
+};
+      
 
   const exportToRaster = async (
     svgString: string,
@@ -454,33 +407,21 @@ export default function Home() {
       {step === 'preview' && selectedVenue && (
         <PreviewFrame
           posterComponent={
-            <PosterDisplay
-              sport={selectedVenue.sport || selectedSport}
-              venueName={selectedVenue.venueName}
-              competition={selectedVenue.competition}
-              city={selectedVenue.city}
-              country={selectedVenue.country}
-              countryFlag={selectedVenue.countryFlag}
-              opened={selectedVenue.opened}
-              capacity={selectedVenue.capacity}
-              architect={selectedVenue.architect}
-              surface={selectedVenue.surface}
-              nickname={selectedVenue.nickname}
-              famousFor={selectedVenue.famousFor}
-              iconicMoments={selectedVenue.iconicMoments}
-              signatureQuote={selectedVenue.signatureQuote as string | undefined}
-              quoteAttribution={selectedVenue.quoteAttribution as string | undefined}
-              coordinates={
-                selectedVenue.lat !== undefined && selectedVenue.lng !== undefined
-                  ? { lat: selectedVenue.lat, lng: selectedVenue.lng }
-                  : undefined
-              }
-              collectorNumber={selectedVenue.collectorNumber}
-              styleId={selectedStyle}
-              selectedParameters={selectedParameters}
-              personalisation={personalisation}
-              sportFields={selectedVenue}
-            />
+           <CinematicHeroPoster
+  venueName={selectedVenue.venueName}
+  city={selectedVenue.city}
+  country={selectedVenue.country}
+  opened={selectedVenue.opened}
+  capacity={selectedVenue.capacity}
+  competition={selectedVenue.competition}
+  collectorNumber={selectedVenue.collectorNumber}
+  inscription={
+    (selectedVenue.collectorInscription as string | undefined) ||
+    (selectedVenue.nickname as string | undefined) ||
+    'Where sporting history becomes part of the city.'
+  }
+  heroImageHref="/venue-assets/eden-gardens/hero-night.svg"
+/> 
           }
           onBack={handleBackToPersonalisation}
           onExport={handleExport}
