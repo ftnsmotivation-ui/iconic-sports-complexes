@@ -1,5 +1,5 @@
+import { HeaderRenderer } from "./HeaderRenderer";
 import { BackgroundRenderer } from "./BackgroundRenderer";
-import { TitleRenderer } from "./TitleRenderer";
 import { SvgCanvas } from "./SvgCanvas";
 import { LayoutRenderer } from "./LayoutRenderer";
 import type { PosterRendererProps } from "./RenderTypes";
@@ -14,9 +14,9 @@ export function PosterRenderer({
     >
       <BackgroundRenderer />
 
-      <TitleRenderer
-        title={model.venueName}
-      />
+      <HeaderRenderer
+  venue={model.venueName}
+/>
 
       <LayoutRenderer
         layout={model.layout}

@@ -1,14 +1,18 @@
+import type { LayoutRegion } from "../Layouts";
+
 interface TitleRendererProps {
   title: string;
+  region: LayoutRegion;
 }
 
 export function TitleRenderer({
   title,
+  region,
 }: TitleRendererProps) {
   return (
     <text
-      x="500"
-      y="90"
+      x={region.x + region.width / 2}
+      y={region.y + 45}
       textAnchor="middle"
       fontSize="44"
       fontWeight="700"

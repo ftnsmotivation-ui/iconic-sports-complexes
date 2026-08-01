@@ -1,4 +1,4 @@
-import type { LayoutRegion } from "../../Layouts";
+import type { LayoutRegion } from "../Layouts";
 
 interface RegionDebugProps {
   region: LayoutRegion;
