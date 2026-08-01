@@ -39,3 +39,10 @@ export interface IllustrationProfile {
 
   avoid: string[];
 }
+export interface IllustrationProps {
+  venue: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}

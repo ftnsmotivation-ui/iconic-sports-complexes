@@ -1,4 +1,14 @@
 import type { LayoutProfile } from "./LayoutTypes";
+import { Grid } from "./Grid";
+
+const contentWidth = Grid.pageWidth - Grid.margin * 2;
+
+const columnWidth = (contentWidth - Grid.gutter) / 2;
+
+const leftColumnX = Grid.margin;
+
+const rightColumnX =
+  Grid.margin + columnWidth + Grid.gutter;
 
 export const layoutProfiles: Record<string, LayoutProfile> = {
   collector: {
@@ -10,66 +20,66 @@ export const layoutProfiles: Record<string, LayoutProfile> = {
 
     title: {
       id: "title",
-      x: 80,
+      x: Grid.margin,
       y: 60,
-      width: 840,
+      width: contentWidth,
       height: 80,
     },
 
     subtitle: {
       id: "subtitle",
-      x: 80,
+      x: Grid.margin,
       y: 150,
-      width: 840,
+      width: contentWidth,
       height: 40,
     },
 
     hero: {
       id: "hero",
-      x: 60,
+      x: Grid.margin,
       y: 220,
-      width: 880,
+      width: contentWidth,
       height: 700,
     },
 
     information: {
       id: "information",
-      x: 80,
+      x: leftColumnX,
       y: 950,
-      width: 420,
+      width: columnWidth,
       height: 280,
     },
 
     map: {
       id: "map",
-      x: 540,
+      x: rightColumnX,
       y: 950,
-      width: 380,
+      width: columnWidth,
       height: 280,
     },
 
     timeline: {
       id: "timeline",
-      x: 80,
+      x: Grid.margin,
       y: 1260,
-      width: 840,
+      width: contentWidth,
       height: 80,
     },
 
     statistics: {
       id: "statistics",
-      x: 80,
+      x: Grid.margin,
       y: 1360,
-      width: 840,
+      width: contentWidth,
       height: 140,
     },
 
     footer: {
       id: "footer",
-      x: 60,
-      y: 1540,
-      width: 880,
-      height: 60,
+      x: Grid.margin,
+      y: 1520,
+      width: contentWidth,
+      height: 40,
     },
   },
 };

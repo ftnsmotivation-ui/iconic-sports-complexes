@@ -1,7 +1,7 @@
 import type { VenueDNA } from "../DNA";
 import type { PosterTheme } from "../Themes";
 import type { LayoutProfile } from "../Layouts";
-import type { IllustrationProfile } from "./IllustrationTypes";
+import type { IllustrationProfile } from "../Illustration/IllustrationTypes";
 
 export function buildPrompt(
   dna: VenueDNA,

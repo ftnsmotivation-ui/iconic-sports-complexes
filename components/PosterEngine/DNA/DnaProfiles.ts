@@ -1,8 +1,9 @@
 import type { VenueDNA } from "./DnaTypes";
+import { defaultDesignDNA } from "./DefaultDesignDNA";
 
 export const dnaProfiles: Record<string, VenueDNA> = {
   "monaco-grand-prix": {
-    venue: "Circuit de Monaco",
+    ...defaultDesignDNA,venue: "Circuit de Monaco",
     sport: "Formula 1",
     competition: "Monaco Grand Prix",
     moods: ["Prestigious", "Elegant", "Historic", "Technical", "Iconic"],
@@ -22,9 +23,20 @@ export const dnaProfiles: Record<string, VenueDNA> = {
       "Street circuit",
       "Mediterranean coastline",
     ],
-  },
+  heroStyle: "Action",
+
+mapStyle: "Circuit",
+
+headerStyle: "Editorial",
+
+borderStyle: "Museum",
+
+footerStyle: "Collector",
+
+illustrationStyle: "ModernVector",},
 
   "eden-gardens": {
+    ...defaultDesignDNA,
     venue: "Eden Gardens",
     sport: "Cricket",
     competition: "International Cricket",
@@ -45,7 +57,17 @@ export const dnaProfiles: Record<string, VenueDNA> = {
       "Roaring crowd",
       "Heritage timeline",
     ],
-  },
+  heroStyle: "Architectural",
+
+mapStyle: "Atlas",
+
+headerStyle: "Luxury",
+
+borderStyle: "Museum",
+
+footerStyle: "Collector",
+
+illustrationStyle: "Engraving",},
 
   "wimbledon-centre-court": {
     venue: "Wimbledon Centre Court",
@@ -68,9 +90,20 @@ export const dnaProfiles: Record<string, VenueDNA> = {
       "Purple and green identity",
       "Championship traditions",
     ],
-  },
+  heroStyle: "Architectural",
+
+mapStyle: "Atlas",
+
+headerStyle: "Luxury",
+
+borderStyle: "Museum",
+
+footerStyle: "Collector",
+
+illustrationStyle: "Engraving",},
 
   "santiago-bernabeu": {
+    ...defaultDesignDNA,
     venue: "Santiago Bernabéu Stadium",
     sport: "Football",
     competition: "Club Football",
@@ -94,7 +127,7 @@ export const dnaProfiles: Record<string, VenueDNA> = {
   },
 
   "camp-nou": {
-    venue: "Camp Nou",
+    ...defaultDesignDNA,venue: "Camp Nou",
     sport: "Football",
     competition: "Club Football",
     moods: ["Historic", "Passionate", "Legendary", "Electric", "Iconic"],
