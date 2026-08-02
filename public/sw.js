@@ -71,3 +71,7 @@ self.addEventListener('fetch', (event) => {
     }
   })());
 });
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'REFRESH_CATALOGUE') event.waitUntil(caches.open(CACHE_NAME).then(warmCatalogue));
+});

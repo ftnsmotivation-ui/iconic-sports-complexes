@@ -16,6 +16,7 @@ import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
 import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components/Studio/StudioDraft";
 import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportSettings";
+import type { SportEnrichmentInput, SportEnrichmentResult } from "@/lib/database/SportEnrichmentTypes";
 import { downloadArtifact } from "@/lib/export/downloadArtifact";
 import { createStudioExportService } from "@/lib/export/createStudioExportService";
 import { createPrintPackage } from "@/lib/export/PrintPackageService";
@@ -23,7 +24,7 @@ import { createEtsyPackage } from "@/lib/export/EtsyPackageService";
 import { createSocialPackage } from "@/lib/export/SocialPackageService";
 import { createMarketingMockups } from "@/lib/export/MarketingMockupService";
 
-const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
+const initialSports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
 
 const posterParameters: readonly StudioParameter[] = [
@@ -37,6 +38,7 @@ const posterParameters: readonly StudioParameter[] = [
 
 export default function StudioPreviewPage() {
   const [selectedSport, setSelectedSport] = useState("Cricket");
+  const [availableSports, setAvailableSports] = useState<string[]>(initialSports);
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedVenue, setSelectedVenue] = useState<StudioVenue | null>(null);
   const [competitions, setCompetitions] = useState<string[]>([]);
@@ -59,7 +61,7 @@ export default function StudioPreviewPage() {
     const draft = loadStudioDraft();
     if (draft) {
       restoreTarget.current = { competition: draft.selectedCompetition, venueName: draft.selectedVenueName };
-      setSelectedSport(sports.includes(draft.selectedSport) ? draft.selectedSport : 'Cricket');
+      setSelectedSport(draft.selectedSport || 'Cricket');
       setSelectedStyle(draft.selectedStyle);
       setSelectedParameters(draft.selectedParameters);
       setPersonalisation(draft.personalisation);
@@ -68,6 +70,11 @@ export default function StudioPreviewPage() {
     }
     setDraftReady(true);
   }, []);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    void fetch('/api/sports').then((response) => response.ok ? response.json() : null).then((data) => { if (data?.sports) setAvailableSports(data.sports); }).catch(() => undefined);
+  }, [draftReady]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -142,6 +149,19 @@ export default function StudioPreviewPage() {
 
   const toggleParameter = (parameter: PosterContentId) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
+  };
+  const addSport = async (record: SportEnrichmentInput): Promise<string | null> => {
+    try {
+      const response = await fetch('/api/sports', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ confirmed: true, record }) });
+      const data: { result?: SportEnrichmentResult; error?: string } = await response.json();
+      if (!response.ok || !data.result) return data.error || 'Unable to add sport.';
+      setAvailableSports(data.result.sports);
+      setSelectedSport(data.result.sport);
+      navigator.serviceWorker?.controller?.postMessage({ type: 'REFRESH_CATALOGUE' });
+      return null;
+    } catch (error) {
+      return error instanceof Error ? error.message : 'Unable to add sport.';
+    }
   };
   const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation, selectedConcept) : null;
   const exportPoster = async () => {
@@ -221,7 +241,7 @@ export default function StudioPreviewPage() {
       header={<StudioHeader />}
       sidebar={(
         <>
-          <VenuePanel sports={sports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} />
+          <VenuePanel sports={availableSports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} onAddSport={addSport} />
           <StylePanel selectedStyle={selectedStyle} posterModel={posterModel} onStyleChange={setSelectedStyle} />
         </>
       )}

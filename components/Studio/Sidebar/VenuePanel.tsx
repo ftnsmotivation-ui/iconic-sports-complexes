@@ -1,3 +1,6 @@
+import type { SportEnrichmentInput } from '@/lib/database/SportEnrichmentTypes';
+import SportEnrichmentPanel from './SportEnrichmentPanel';
+
 export interface StudioVenue {
   sport?: string;
   competition: string;
@@ -29,6 +32,7 @@ interface VenuePanelProps {
   onSportChange: (sport: string) => void;
   onCompetitionChange: (competition: string) => void;
   onVenueChange: (venue: StudioVenue | null) => void;
+  onAddSport: (input: SportEnrichmentInput) => Promise<string | null>;
 }
 
 export function PanelHeading({
@@ -63,6 +67,7 @@ export default function VenuePanel({
   onSportChange,
   onCompetitionChange,
   onVenueChange,
+  onAddSport,
 }: VenuePanelProps) {
   return (
     <>
@@ -73,6 +78,7 @@ export default function VenuePanel({
           {sports.map((sport) => <option key={sport} value={sport}>{sport}</option>)}
         </select>
       </label>
+      <SportEnrichmentPanel onAddSport={onAddSport} />
       <label className="mt-4 block">
         <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40">Competition</span>
         <select value={selectedCompetition} disabled={loading || competitions.length === 0} onChange={(event) => onCompetitionChange(event.target.value)} className="w-full rounded-lg border border-white/10 bg-[#171b21] px-3 py-3 text-sm text-white outline-none transition focus:border-amber-400/60 disabled:opacity-50">
