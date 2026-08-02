@@ -21,6 +21,7 @@ import { createStudioExportService } from "@/lib/export/createStudioExportServic
 import { createPrintPackage } from "@/lib/export/PrintPackageService";
 import { createEtsyPackage } from "@/lib/export/EtsyPackageService";
 import { createSocialPackage } from "@/lib/export/SocialPackageService";
+import { createMarketingMockups } from "@/lib/export/MarketingMockupService";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -200,6 +201,20 @@ export default function StudioPreviewPage() {
       setExporting(false);
     }
   };
+  const exportMarketingMockups = async () => {
+    if (!posterModel) return;
+    setExporting(true);
+    setExportMessage('Starting marketing mockups…');
+    try {
+      const artifact = await createMarketingMockups(posterModel, exportSettings, setExportMessage);
+      downloadArtifact(artifact);
+      setExportMessage(`${artifact.filename} is ready.`);
+    } catch (error) {
+      setExportMessage(error instanceof Error ? error.message : 'Unable to create marketing mockups.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <StudioShell
@@ -211,7 +226,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} onExportEtsyPackage={() => void exportEtsyPackage()} onExportSocialPackage={() => void exportSocialPackage()} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} onExportEtsyPackage={() => void exportEtsyPackage()} onExportSocialPackage={() => void exportSocialPackage()} onExportMarketingMockups={() => void exportMarketingMockups()} />}
     />
   );
 }

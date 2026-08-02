@@ -21,14 +21,15 @@ interface VenueInspectorProps {
   onExportPrintPackage: () => void;
   onExportEtsyPackage: () => void;
   onExportSocialPackage: () => void;
+  onExportMarketingMockups: () => void;
 }
 
-export default function VenueInspector({ parameters, selectedParameters, onToggleParameter, personalisation, onPersonalisationChange, onResetStudio, exportSettings, onExportSettingsChange, exporting, exportMessage, onExport, onExportPrintPackage, onExportEtsyPackage, onExportSocialPackage }: VenueInspectorProps) {
+export default function VenueInspector({ parameters, selectedParameters, onToggleParameter, personalisation, onPersonalisationChange, onResetStudio, exportSettings, onExportSettingsChange, exporting, exportMessage, onExport, onExportPrintPackage, onExportEtsyPackage, onExportSocialPackage, onExportMarketingMockups }: VenueInspectorProps) {
   return (
     <>
       <ParameterPanel parameters={parameters} selectedParameters={selectedParameters} onToggleParameter={onToggleParameter} />
       <PersonalisationPanel value={personalisation} onChange={onPersonalisationChange}/>
-      <OutputPanel settings={exportSettings} onSettingsChange={onExportSettingsChange} onResetStudio={onResetStudio} exporting={exporting} exportMessage={exportMessage} onExport={onExport} onExportPrintPackage={onExportPrintPackage} onExportEtsyPackage={onExportEtsyPackage} onExportSocialPackage={onExportSocialPackage}/>
+      <OutputPanel settings={exportSettings} onSettingsChange={onExportSettingsChange} onResetStudio={onResetStudio} exporting={exporting} exportMessage={exportMessage} onExport={onExport} onExportPrintPackage={onExportPrintPackage} onExportEtsyPackage={onExportEtsyPackage} onExportSocialPackage={onExportSocialPackage} onExportMarketingMockups={onExportMarketingMockups}/>
     </>
   );
 }
