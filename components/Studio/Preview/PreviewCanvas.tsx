@@ -12,10 +12,13 @@ interface PreviewCanvasProps {
 
 export default function PreviewCanvas({ selectedVenue, selectedStyle, loading }: PreviewCanvasProps) {
   return (
-    <section className="relative flex min-w-0 flex-col bg-[#11151a]">
+    <section className="relative flex min-h-[620px] min-w-0 flex-col bg-[#11151a] lg:min-h-[720px] xl:min-h-0">
       <PreviewToolbar venueName={selectedVenue?.venueName} selectedStyle={selectedStyle} />
-      <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-10">
-        <div className="w-full max-w-[610px]">
+      <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
+        <div
+          className="w-full max-w-[610px]"
+          style={{ width: "min(100%, calc((100vh - 200px) * 8 / 11))" }}
+        >
           {selectedVenue ? (
             <CinematicHeroPoster
               venueName={selectedVenue.venueName}
