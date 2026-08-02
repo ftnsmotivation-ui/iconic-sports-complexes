@@ -2,17 +2,21 @@ import { useState } from "react";
 
 import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
 import type { PosterModel } from "@/components/PosterGenerator/PosterModel";
+import type { PosterConceptId } from "@/components/PosterGenerator/PosterConceptDirector";
 
 import type { StudioStyle } from "../Sidebar/StylePanel";
 import PreviewToolbar, { type PreviewZoom } from "./PreviewToolbar";
+import ConceptSelector from "./ConceptSelector";
 
 interface PreviewCanvasProps {
   posterModel: PosterModel | null;
   selectedStyle: StudioStyle;
   loading: boolean;
+  selectedConcept: PosterConceptId;
+  onConceptChange: (concept: PosterConceptId) => void;
 }
 
-export default function PreviewCanvas({ posterModel, selectedStyle, loading }: PreviewCanvasProps) {
+export default function PreviewCanvas({ posterModel, selectedStyle, loading, selectedConcept, onConceptChange }: PreviewCanvasProps) {
   const [zoom, setZoom] = useState<PreviewZoom>("fit");
   const [showGrid, setShowGrid] = useState(false);
   const [showSafeMargin, setShowSafeMargin] = useState(false);
@@ -35,6 +39,7 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading }: P
         onSafeMarginToggle={() => setShowSafeMargin((current) => !current)}
         onGuidesToggle={() => setShowGuides((current) => !current)}
       />
+      <ConceptSelector posterModel={posterModel} selectedConcept={selectedConcept} onConceptChange={onConceptChange}/>
       <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
         <div
           className="relative shrink-0"

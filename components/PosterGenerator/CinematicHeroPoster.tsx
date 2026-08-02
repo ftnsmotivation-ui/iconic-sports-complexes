@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { resolvePosterColours } from './PosterColourDirector';
+import { resolvePosterConcept } from './PosterConceptDirector';
 import HistoricContentModule from './HistoricContentModule';
 import PersonalisationModule from './PersonalisationModule';
 import type { PosterModel } from './PosterModel';
@@ -19,9 +20,10 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
   const { identity, facts, collector, narrative, history, illustration, direction, content, personalisation } = model;
   const { venueName, city, country, countryFlag, competition, sport } = identity;
   const style = resolvePosterStyle(model.styleId);
-  const layout = resolvePosterLayout(model.styleId, direction);
-  const typography = resolvePosterTypography(model, layout, style);
-  const colours = resolvePosterColours(model, style);
+  const concept = resolvePosterConcept(model.conceptId);
+  const layout = resolvePosterLayout(model.styleId, direction, concept.layoutId);
+  const typography = resolvePosterTypography(model, layout, style, concept);
+  const colours = resolvePosterColours(model, style, concept);
   const densityFactLimits = { minimal: 2, balanced: 3, rich: 4 } as const;
   const factLimit = Math.min(style.factLimit, densityFactLimits[direction.informationDensity]);
 
@@ -32,6 +34,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       data-illustration-priority={direction.illustrationPriority}
       data-illustration-strategy={illustration.strategy}
       data-poster-layout={layout.id}
+      data-poster-concept={concept.id}
       aria-label={`${venueName} collector poster`}
       title={direction.atmosphere}
       style={{
@@ -60,7 +63,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           objectFit: 'cover',
           objectPosition: illustration.objectPosition,
           display: 'block',
-          transform: `scale(${illustration.scale})`,
+          transform: `scale(${concept.imageScale || illustration.scale})`,
+          filter: concept.imageFilter,
         }}
       />
 

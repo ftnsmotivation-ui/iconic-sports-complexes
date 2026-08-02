@@ -65,7 +65,8 @@ function preferenceLayout(preference: string): PosterLayoutId | null {
   return null;
 }
 
-export function resolvePosterLayout(styleId: PosterStyleId, direction: PosterDirection): PosterLayoutProfile {
+export function resolvePosterLayout(styleId: PosterStyleId, direction: PosterDirection, conceptLayoutId?: PosterLayoutId): PosterLayoutProfile {
+  if (conceptLayoutId) return posterLayoutProfiles[conceptLayoutId];
   const scores: Record<PosterLayoutId, number> = {
     "cinematic-hero": 0,
     "editorial-column": 0,

@@ -1,5 +1,6 @@
 import type { PosterModel } from "./PosterModel";
 import type { PosterStyleProfile } from "./PosterStyleProfiles";
+import type { PosterConceptProfile } from "./PosterConceptDirector";
 
 export interface PosterColourSystem {
   background: string;
@@ -35,24 +36,24 @@ function withAlpha(hex: string, alpha: number): string {
   return `rgba(${red},${green},${blue},${alpha})`;
 }
 
-export function resolvePosterColours(model: PosterModel, style: PosterStyleProfile): PosterColourSystem {
+export function resolvePosterColours(model: PosterModel, style: PosterStyleProfile, concept?: PosterConceptProfile): PosterColourSystem {
   const venuePalette = model.direction.colourPalette;
   const sportAccent = sportAccents[model.identity.sport.toLowerCase()];
   const venueAccent = model.styleId === "editorial" ? venuePalette[3] : venuePalette[1];
-  const accent = venueAccent || sportAccent || style.accent;
-  const background = model.styleId === "collector" ? venuePalette[0] || style.background : style.background;
-  const foreground = model.styleId === "collector" ? venuePalette[2] || style.foreground : style.foreground;
+  const accent = concept?.colours?.accent || venueAccent || sportAccent || style.accent;
+  const background = concept?.colours?.background || (model.styleId === "collector" ? venuePalette[0] || style.background : style.background);
+  const foreground = concept?.colours?.foreground || (model.styleId === "collector" ? venuePalette[2] || style.foreground : style.foreground);
 
   return {
     background,
     foreground,
     accent,
     accentMuted: withAlpha(accent, 0.78),
-    muted: style.muted,
-    subtle: style.subtle,
+    muted: concept?.colours?.muted || style.muted,
+    subtle: concept?.colours?.subtle || style.subtle,
     borderSecondary: withAlpha(accent, model.styleId === "editorial" ? 0.22 : 0.38),
-    heroOverlay: style.heroOverlay,
-    vignette: style.vignette,
+    heroOverlay: concept?.colours?.heroOverlay || style.heroOverlay,
+    vignette: concept?.colours?.vignette || style.vignette,
     gridLine: withAlpha(accent, 0.28),
     palette: [background, foreground, accent, style.muted, style.subtle],
   };

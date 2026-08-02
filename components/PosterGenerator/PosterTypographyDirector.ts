@@ -1,6 +1,7 @@
 import type { PosterLayoutProfile } from "./PosterLayoutDirector";
 import type { PosterModel } from "./PosterModel";
 import type { PosterStyleProfile } from "./PosterStyleProfiles";
+import type { PosterConceptProfile } from "./PosterConceptDirector";
 
 export interface TypographySpec {
   fontFamily: string;
@@ -55,6 +56,7 @@ export function resolvePosterTypography(
   model: PosterModel,
   layout: PosterLayoutProfile,
   style: PosterStyleProfile,
+  concept?: PosterConceptProfile,
 ): PosterTypographySystem {
   const titleLines = balanceTitle(model.identity.venueName);
   const longestLine = Math.max(...titleLines.map((line) => line.length));
@@ -70,7 +72,7 @@ export function resolvePosterTypography(
     masthead: { fontFamily: style.bodyFont, fontSize: 10, fontWeight: 500, letterSpacing: "3.5px", lineHeight: 1.2, ...uppercase },
     collector: { fontFamily: style.bodyFont, fontSize: 10, fontWeight: 500, letterSpacing: "1.8px", lineHeight: 1.2, ...uppercase },
     subtitle: { fontFamily: style.bodyFont, fontSize: 12, fontWeight: 600, letterSpacing: "4.2px", lineHeight: 1.2, ...uppercase },
-    title: { fontFamily: model.direction.titleFont, fontSize: baseTitleSize * layout.titleScale, fontWeight: 700, letterSpacing: "-1.6px", lineHeight: titleLines.length > 2 ? 0.94 : 0.91, ...uppercase },
+    title: { fontFamily: model.direction.titleFont, fontSize: baseTitleSize * layout.titleScale * (concept?.titleScale ?? 1), fontWeight: concept?.titleWeight ?? 700, letterSpacing: concept?.titleLetterSpacing ?? "-1.6px", lineHeight: titleLines.length > 2 ? 0.94 : 0.91, ...uppercase },
     metadata: { fontFamily: style.bodyFont, fontSize: 13, fontWeight: 500, letterSpacing: "4px", lineHeight: 1.2, ...uppercase },
     sectionLabel: { fontFamily: style.bodyFont, fontSize: 10, fontWeight: 600, letterSpacing: "3px", lineHeight: 1.2, ...uppercase },
     quote: { fontFamily: model.direction.titleFont, fontSize: 21, fontWeight: 400, letterSpacing: "0", lineHeight: 1.32 },

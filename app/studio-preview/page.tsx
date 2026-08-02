@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
+import type { PosterConceptId } from "@/components/PosterGenerator/PosterConceptDirector";
 import type { PosterContentId } from "@/components/PosterGenerator/PosterContent";
 import { emptyPosterPersonalisation, type PosterPersonalisationInput } from "@/components/PosterGenerator/PosterPersonalisation";
 import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
@@ -33,6 +34,7 @@ export default function StudioPreviewPage() {
   const [selectedStyle, setSelectedStyle] = useState<StudioStyle>("collector");
   const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(["venueFacts", "venueMap", "collectorNumber"]);
   const [personalisation, setPersonalisation] = useState<PosterPersonalisationInput>(emptyPosterPersonalisation);
+  const [selectedConcept, setSelectedConcept] = useState<PosterConceptId>('monument');
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
 
@@ -84,7 +86,7 @@ export default function StudioPreviewPage() {
   const toggleParameter = (parameter: PosterContentId) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
   };
-  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation) : null;
+  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation, selectedConcept) : null;
 
   return (
     <StudioShell
@@ -95,7 +97,7 @@ export default function StudioPreviewPage() {
           <StylePanel selectedStyle={selectedStyle} posterModel={posterModel} onStyleChange={setSelectedStyle} />
         </>
       )}
-      preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} />}
+      preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} />}
       inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} />}
     />
   );
