@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { resolvePosterColours } from './PosterColourDirector';
+import HistoricContentModule from './HistoricContentModule';
 import type { PosterModel } from './PosterModel';
 import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
@@ -13,7 +14,7 @@ export interface CinematicHeroPosterProps {
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
-  const { identity, facts, collector, narrative, illustration, direction } = model;
+  const { identity, facts, collector, narrative, history, illustration, direction } = model;
   const { venueName, city, country, competition } = identity;
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
@@ -203,11 +204,18 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             style={{
               borderLeft: `1px solid ${colours.borderSecondary}`,
               paddingLeft: 25,
-              color: colours.muted,
-              ...typography.body,
             }}
           >
-            {narrative.secondaryStory}
+            <HistoricContentModule
+              items={history}
+              fallback={narrative.secondaryStory}
+              limit={direction.informationDensity === 'rich' ? 3 : 2}
+              accentColor={colours.accentMuted}
+              textColor={colours.muted}
+              borderColor={colours.borderSecondary}
+              labelStyle={typography.factLabel}
+              bodyStyle={typography.body}
+            />
           </div>}
         </div>
 

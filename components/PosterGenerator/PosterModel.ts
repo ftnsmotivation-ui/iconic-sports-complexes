@@ -1,8 +1,9 @@
 import { resolvePosterDirection, type PosterDirection } from "./PosterDirection";
 import { resolvePosterIllustration, type PosterIllustrationPlan } from "./PosterIllustrationDirector";
+import { resolvePosterHistory, type PosterHistoryItem, type PosterHistorySource } from "./PosterHistory";
 import type { PosterStyleId } from "./PosterStyleProfiles";
 
-export interface PosterModelSource {
+export interface PosterModelSource extends PosterHistorySource {
   venueName: string;
   sport?: string;
   city: string;
@@ -16,7 +17,6 @@ export interface PosterModelSource {
   heroImageHref?: string;
   nickname?: string;
   famousFor?: string;
-  iconicMoments?: string;
   surface?: string;
   architect?: string;
 }
@@ -42,6 +42,7 @@ export interface PosterModel {
   narrative: {
     secondaryStory: string;
   };
+  history: readonly PosterHistoryItem[];
   illustration: PosterIllustrationPlan;
   direction: PosterDirection;
   styleId: PosterStyleId;
@@ -76,8 +77,9 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
       inscription: source.inscription || source.collectorInscription || source.nickname || source.famousFor || "Where sporting history becomes part of the city.",
     },
     narrative: {
-      secondaryStory: source.iconicMoments || source.famousFor || source.nickname || "A stage where generations gathered, records fell and sporting memory became civic history.",
+      secondaryStory: source.famousFor || source.nickname || "A stage where generations gathered, records fell and sporting memory became civic history.",
     },
+    history: resolvePosterHistory(source),
     illustration: resolvePosterIllustration({
       venueName: source.venueName,
       sport,
