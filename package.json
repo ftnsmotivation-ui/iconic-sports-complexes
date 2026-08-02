@@ -10,6 +10,7 @@
     "desktop:dev": "electron desktop/main.cjs --dev",
     "desktop:prepare": "node desktop/prepare.cjs",
     "desktop:start": "npm run desktop:prepare && electron desktop/main.cjs",
+    "test": "node --require ./scripts/register-typescript.cjs --test tests/*.test.cjs",
     "lint": "eslint"
   },
   "dependencies": {
