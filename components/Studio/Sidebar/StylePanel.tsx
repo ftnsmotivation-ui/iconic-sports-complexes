@@ -1,4 +1,7 @@
+import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
+
 import { PanelHeading } from "./VenuePanel";
+import type { StudioVenue } from "./VenuePanel";
 
 export type StudioStyle = "collector" | "editorial" | "atlas";
 
@@ -10,6 +13,7 @@ interface StyleOption {
 
 interface StylePanelProps {
   selectedStyle: StudioStyle;
+  selectedVenue: StudioVenue | null;
   onStyleChange: (style: StudioStyle) => void;
 }
 
@@ -31,7 +35,7 @@ const styleOptions: readonly StyleOption[] = [
   },
 ];
 
-export default function StylePanel({ selectedStyle, onStyleChange }: StylePanelProps) {
+export default function StylePanel({ selectedStyle, selectedVenue, onStyleChange }: StylePanelProps) {
   return (
     <>
       <div className="my-7 h-px bg-white/10" />
@@ -42,6 +46,7 @@ export default function StylePanel({ selectedStyle, onStyleChange }: StylePanelP
             key={style.id}
             style={style}
             selected={selectedStyle === style.id}
+            venue={selectedVenue}
             onSelect={onStyleChange}
           />
         ))}
@@ -56,10 +61,11 @@ export default function StylePanel({ selectedStyle, onStyleChange }: StylePanelP
 interface StyleCardProps {
   style: StyleOption;
   selected: boolean;
+  venue: StudioVenue | null;
   onSelect: (style: StudioStyle) => void;
 }
 
-function StyleCard({ style, selected, onSelect }: StyleCardProps) {
+function StyleCard({ style, selected, venue, onSelect }: StyleCardProps) {
   return (
     <button
       type="button"
@@ -74,7 +80,7 @@ function StyleCard({ style, selected, onSelect }: StyleCardProps) {
       ].join(" ")}
     >
       <div className="flex items-center gap-3">
-        <StyleThumbnail style={style.id} />
+        <StyleThumbnail style={style.id} venue={venue} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className={selected ? "text-sm font-semibold text-amber-200" : "text-sm font-semibold text-white/80"}>
@@ -101,40 +107,35 @@ function StyleCard({ style, selected, onSelect }: StyleCardProps) {
   );
 }
 
-function StyleThumbnail({ style }: { style: StudioStyle }) {
-  if (style === "collector") {
-    return (
-      <span aria-hidden="true" className="relative block h-[68px] w-[48px] shrink-0 overflow-hidden rounded-sm border border-[#b89450]/70 bg-[#111419] shadow-lg">
-        <span className="absolute inset-[4px] border border-[#9b783e]/45" />
-        <span className="absolute left-[8px] right-[8px] top-[11px] h-px bg-[#d1ad63]/55" />
-        <span className="absolute left-[8px] top-[17px] h-[3px] w-[25px] bg-[#eee3c9]/90" />
-        <span className="absolute left-[8px] top-[23px] h-px w-[16px] bg-[#d1ad63]/70" />
-        <span className="absolute bottom-[10px] left-[8px] right-[8px] h-[20px] bg-gradient-to-t from-[#06080b] to-[#29303a]" />
-        <span className="absolute bottom-[14px] left-[13px] h-[7px] w-[22px] border-t border-[#d1ad63]/45" />
-      </span>
-    );
-  }
-
-  if (style === "editorial") {
-    return (
-      <span aria-hidden="true" className="relative block h-[68px] w-[48px] shrink-0 overflow-hidden rounded-sm border border-[#d9d0bc] bg-[#eee9dd] shadow-lg">
-        <span className="absolute left-[7px] top-[8px] text-[4px] font-bold uppercase tracking-[0.16em] text-[#a36d48]">Studio</span>
-        <span className="absolute left-[7px] top-[17px] h-[4px] w-[29px] bg-[#202326]" />
-        <span className="absolute left-[7px] top-[24px] h-[2px] w-[20px] bg-[#202326]/80" />
-        <span className="absolute left-[7px] top-[31px] h-px w-[33px] bg-[#202326]/25" />
-        <span className="absolute bottom-[10px] left-[7px] h-[17px] w-[20px] bg-[#b9b3a8]" />
-        <span className="absolute bottom-[10px] right-[7px] h-[12px] w-[9px] border-l border-[#202326]/35" />
-      </span>
-    );
-  }
-
+function StyleThumbnail({ style, venue }: { style: StudioStyle; venue: StudioVenue | null }) {
   return (
-    <span aria-hidden="true" className="relative block h-[68px] w-[48px] shrink-0 overflow-hidden rounded-sm border border-[#9b8d73] bg-[#aaa087] shadow-lg">
-      <span className="absolute inset-0 bg-[linear-gradient(rgba(45,53,54,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(45,53,54,0.14)_1px,transparent_1px)] bg-[size:8px_8px]" />
-      <span className="absolute left-[6px] top-[6px] font-mono text-[3px] uppercase tracking-wider text-[#303a3a]">51.50° N</span>
-      <span className="absolute left-[7px] top-[20px] h-[25px] w-[31px] rotate-[-8deg] rounded-[50%] border border-[#344140]/65" />
-      <span className="absolute left-[12px] top-[25px] h-[14px] w-[21px] rotate-[13deg] border-y border-[#344140]/45" />
-      <span className="absolute bottom-[7px] right-[6px] font-mono text-[3px] tracking-wider text-[#303a3a]">ARCHIVE 03</span>
+    <span
+      aria-hidden="true"
+      className="relative block h-[68px] w-[48px] shrink-0 overflow-hidden rounded-sm border border-white/15 bg-[#080b0c] shadow-lg"
+    >
+      {venue ? (
+        <span
+          className="pointer-events-none absolute left-0 top-0 block h-[1100px] w-[800px] origin-top-left"
+          style={{ transform: "scale(0.06)" }}
+        >
+          <CinematicHeroPoster
+            venueName={venue.venueName}
+            city={venue.city}
+            country={venue.country}
+            opened={venue.opened}
+            capacity={venue.capacity}
+            competition={venue.competition}
+            collectorNumber={venue.collectorNumber ?? 12}
+            inscription={venue.inscription || venue.nickname || venue.famousFor || "Where sporting history becomes part of the city."}
+            heroImageHref={venue.heroImageHref || "/venue-assets/eden-gardens/hero-night.svg"}
+            surface={venue.surface || "International standard"}
+            architect={venue.architect || "Historic development"}
+            styleId={style}
+          />
+        </span>
+      ) : (
+        <span className="absolute inset-2 animate-pulse border border-white/10 bg-white/5" />
+      )}
     </span>
   );
 }

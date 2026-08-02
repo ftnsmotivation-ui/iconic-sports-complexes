@@ -79,7 +79,7 @@ export default function StudioPreviewPage() {
       sidebar={(
         <>
           <VenuePanel sports={sports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} />
-          <StylePanel selectedStyle={selectedStyle} onStyleChange={setSelectedStyle} />
+          <StylePanel selectedStyle={selectedStyle} selectedVenue={selectedVenue} onStyleChange={setSelectedStyle} />
         </>
       )}
       preview={<PreviewCanvas selectedVenue={selectedVenue} selectedStyle={selectedStyle} loading={loading} />}
