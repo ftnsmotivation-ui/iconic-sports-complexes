@@ -8,14 +8,15 @@ import type { PosterModel } from './PosterModel';
 import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
 import { resolvePosterTypography } from './PosterTypographyDirector';
+import { CompassRose, VenueMapEngine } from './VenueMapEngine';
 
 export interface CinematicHeroPosterProps {
   model: PosterModel;
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
-  const { identity, facts, collector, narrative, history, illustration, direction } = model;
-  const { venueName, city, country, competition } = identity;
+  const { identity, facts, collector, narrative, history, illustration, direction, content } = model;
+  const { venueName, city, country, countryFlag, competition, sport } = identity;
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
   const typography = resolvePosterTypography(model, layout, style);
@@ -109,7 +110,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         }}
       >
         <span>{direction.moods[0] ?? 'Iconic'} · {style.name} Series</span>
-        <span style={typography.collector}>No. {collector.number} / 500</span>
+        {content.collectorNumber && <span style={typography.collector}>No. {collector.number} / 500</span>}
       </div>
 
       {/* Hero title */}
@@ -147,7 +148,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             ...typography.metadata,
           }}
         >
-          {city} · {country}
+          {content.countryFlag && countryFlag ? `${countryFlag} ` : ''}{city} · {country}
         </div>
       </div>
 
@@ -160,7 +161,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           top: layout.lowerPanelTop,
           bottom: 51,
           display: 'grid',
-          gridTemplateRows: 'auto auto 1fr auto',
+          gridTemplateRows: content.venueFacts ? 'auto auto 1fr auto' : 'auto auto 1fr',
         }}
       >
         <div
@@ -173,7 +174,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: layout.storyColumns,
+            gridTemplateColumns: content.historicMoments || content.venueMap || content.compassRose ? layout.storyColumns : '1fr',
             gap: 34,
             paddingTop: 26,
             paddingBottom: 24,
@@ -200,26 +201,27 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             </div>
           </div>
 
-          {style.informationDensity !== 'minimal' && <div
+          {(content.historicMoments || content.venueMap || content.compassRose) && <div
             style={{
               borderLeft: `1px solid ${colours.borderSecondary}`,
               paddingLeft: 25,
             }}
           >
-            <HistoricContentModule
-              items={history}
-              fallback={narrative.secondaryStory}
-              limit={direction.informationDensity === 'rich' ? 3 : 2}
-              accentColor={colours.accentMuted}
-              textColor={colours.muted}
-              borderColor={colours.borderSecondary}
-              labelStyle={typography.factLabel}
-              bodyStyle={typography.body}
-            />
+            {content.historicMoments && (
+              <HistoricContentModule items={history} fallback={narrative.secondaryStory} limit={direction.informationDensity === 'rich' ? 3 : direction.informationDensity === 'balanced' ? 2 : 1} accentColor={colours.accentMuted} textColor={colours.muted} borderColor={colours.borderSecondary} labelStyle={typography.factLabel} bodyStyle={typography.body}/>
+            )}
+            {content.venueMap && (
+              <svg viewBox="-180 -180 360 360" aria-label={`${venueName} venue map`} style={{ display: 'block', width: content.historicMoments ? 104 : 148, margin: content.historicMoments ? '14px auto 0' : '0 auto' }}>
+                <VenueMapEngine sport={sport} venueName={venueName} color={colours.accent} mutedColor={colours.borderSecondary} showCompass={content.compassRose}/>
+              </svg>
+            )}
+            {content.compassRose && !content.venueMap && (
+              <svg viewBox="-36 -40 72 76" aria-label="Compass rose" style={{ display: 'block', width: 70, margin: '0 auto' }}><CompassRose color={colours.accent}/></svg>
+            )}
           </div>}
         </div>
 
-        <div
+        {content.venueFacts && <div
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${factLimit}, 1fr)`,
@@ -260,7 +262,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
         <div
           style={{

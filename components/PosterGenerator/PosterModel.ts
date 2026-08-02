@@ -1,4 +1,5 @@
 import { resolvePosterDirection, type PosterDirection } from "./PosterDirection";
+import { resolvePosterContent, type PosterContentId, type PosterContentVisibility } from "./PosterContent";
 import { resolvePosterIllustration, type PosterIllustrationPlan } from "./PosterIllustrationDirector";
 import { resolvePosterHistory, type PosterHistoryItem, type PosterHistorySource } from "./PosterHistory";
 import type { PosterStyleId } from "./PosterStyleProfiles";
@@ -8,6 +9,7 @@ export interface PosterModelSource extends PosterHistorySource {
   sport?: string;
   city: string;
   country: string;
+  countryFlag?: string;
   opened: number | string;
   capacity: number | string;
   competition?: string;
@@ -27,6 +29,7 @@ export interface PosterModel {
     sport: string;
     city: string;
     country: string;
+    countryFlag: string;
     competition: string;
   };
   facts: {
@@ -46,6 +49,7 @@ export interface PosterModel {
   illustration: PosterIllustrationPlan;
   direction: PosterDirection;
   styleId: PosterStyleId;
+  content: PosterContentVisibility;
 }
 
 function normalizeCapacity(value: number | string): string {
@@ -54,7 +58,7 @@ function normalizeCapacity(value: number | string): string {
   return Number.isFinite(parsed) ? parsed.toLocaleString() : String(value);
 }
 
-export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector"): PosterModel {
+export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector", selectedContent?: readonly PosterContentId[]): PosterModel {
   const sport = source.sport || "Sporting Venue";
   const direction = resolvePosterDirection(source.venueName);
 
@@ -64,6 +68,7 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
       sport,
       city: source.city,
       country: source.country,
+      countryFlag: source.countryFlag || "",
       competition: source.competition || "ICONIC SPORTING VENUE",
     },
     facts: {
@@ -88,5 +93,6 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
     }),
     direction,
     styleId,
+    content: resolvePosterContent(selectedContent),
   };
 }

@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 
 import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
+import type { PosterContentId } from "@/components/PosterGenerator/PosterContent";
 import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
+import type { StudioParameter } from "@/components/Studio/Sidebar/ParameterPanel";
 import PreviewCanvas from "@/components/Studio/Preview/PreviewCanvas";
 import StylePanel, { type StudioStyle } from "@/components/Studio/Sidebar/StylePanel";
 import VenuePanel, { type StudioVenue } from "@/components/Studio/Sidebar/VenuePanel";
@@ -12,7 +14,14 @@ import StudioShell from "@/components/Studio/StudioShell";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 
-const posterParameters = ["Venue facts", "Venue map", "Country flag", "Compass rose", "Historic moments", "Collector number"];
+const posterParameters: readonly StudioParameter[] = [
+  { id: "venueFacts", label: "Venue facts" },
+  { id: "venueMap", label: "Venue map" },
+  { id: "countryFlag", label: "Country flag" },
+  { id: "compassRose", label: "Compass rose" },
+  { id: "historicMoments", label: "Historic moments" },
+  { id: "collectorNumber", label: "Collector number" },
+];
 
 export default function StudioPreviewPage() {
   const [selectedSport, setSelectedSport] = useState("Cricket");
@@ -21,7 +30,7 @@ export default function StudioPreviewPage() {
   const [competitions, setCompetitions] = useState<string[]>([]);
   const [venues, setVenues] = useState<StudioVenue[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<StudioStyle>("collector");
-  const [selectedParameters, setSelectedParameters] = useState<string[]>(["Venue facts", "Venue map", "Collector number"]);
+  const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(["venueFacts", "venueMap", "collectorNumber"]);
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
 
@@ -70,10 +79,10 @@ export default function StudioPreviewPage() {
     void loadVenues();
   }, [selectedCompetition, selectedSport]);
 
-  const toggleParameter = (parameter: string) => {
+  const toggleParameter = (parameter: PosterContentId) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
   };
-  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle) : null;
+  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters) : null;
 
   return (
     <StudioShell
