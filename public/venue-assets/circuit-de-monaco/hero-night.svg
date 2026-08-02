@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" role="img" aria-labelledby="title description">
+  <title id="title">Circuit de Monaco</title>
+  <desc id="description">An original vector portrait of Monaco's street circuit winding between the principality and its yacht-lined harbour.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#10202b"/><stop offset=".58" stop-color="#26373d"/><stop offset="1" stop-color="#b48e62"/></linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#183c48"/><stop offset=".55" stop-color="#0d2934"/><stop offset="1" stop-color="#071b25"/></linearGradient>
+    <linearGradient id="city" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e1d5bd"/><stop offset="1" stop-color="#786c5f"/></linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3b4140"/><stop offset="1" stop-color="#181d1e"/></linearGradient>
+    <radialGradient id="sunset" cx="74%" cy="34%" r="48%"><stop stop-color="#edcb8a" stop-opacity=".34"/><stop offset="1" stop-color="#edcb8a" stop-opacity="0"/></radialGradient>
+    <pattern id="windows" width="25" height="20" patternUnits="userSpaceOnUse"><rect width="25" height="20" fill="#a69b87"/><rect x="5" y="4" width="10" height="7" fill="#f2d69a" opacity=".75"/></pattern>
+    <pattern id="waterLines" width="70" height="28" patternUnits="userSpaceOnUse"><path d="M0 13c17-8 36-8 70 0" fill="none" stroke="#7194a0" stroke-width="2" opacity=".3"/></pattern>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="8"/></filter>
+    <symbol id="yacht" viewBox="0 -70 150 140">
+      <path d="M0 34h143l-25 31H22z" fill="#e8e4d6" stroke="#66737a" stroke-width="3"/>
+      <rect x="39" y="6" width="62" height="29" rx="5" fill="#e8e4d6" stroke="#66737a" stroke-width="3"/>
+      <path d="M69 6V-63M73-49l42 47H73z" fill="#b9c5c5" stroke="#66737a" stroke-width="3"/>
+      <path d="M11 51h112" stroke="#d5bd7d" stroke-width="3"/>
+    </symbol>
+    <symbol id="armco" viewBox="0 0 180 50">
+      <path d="M0 9h180M0 24h180M0 39h180" stroke="#d8d5c9" stroke-width="7"/>
+      <path d="M15 3v45M55 3v45M95 3v45M135 3v45M175 3v45" stroke="#6d7472" stroke-width="5"/>
+    </symbol>
+  </defs>
+
+  <rect width="1600" height="1100" fill="url(#sky)"/><rect width="1600" height="1100" fill="url(#sunset)"/>
+  <path d="M0 475L132 397l110 18 92-94 126 35 91-109 123 31 83-94 129 68 94-83 126 98 101-35 107 112 136 22 100 100v243H0z" fill="#34423f"/>
+  <path d="M0 529l171-74 137 23 144-88 151 28 166-92 151 32 154-72 164 88 170-32 212 119v256H0z" fill="#53605a" opacity=".78"/>
+
+  <!-- Dense Monte Carlo hillside -->
+  <g stroke="#554f47" stroke-width="3">
+    <path d="M49 423h149v232H49zM218 385h123v255H218zM356 351h151v315H356zM525 405h115v236H525zM655 312h170v351H655zM842 362h129v301H842zM988 282h181v392H988zM1187 370h144v296h-144zM1347 342h194v354h-194z" fill="url(#city)"/>
+    <path d="M72 454h105v178H72zM239 415h81v201h-81zM380 385h103v252H380zM681 345h117v288H681zM1014 319h128v318h-128zM1211 402h96v236h-96zM1372 379h143v278h-143z" fill="url(#windows)"/>
+    <path d="M355 350l76-67 77 67M987 282l91-77 92 77M1347 342l96-61 98 61" fill="#a97553"/>
+  </g>
+  <g fill="#253b35"><circle cx="128" cy="407" r="25"/><circle cx="614" cy="395" r="22"/><circle cx="879" cy="347" r="25"/><circle cx="1284" cy="359" r="28"/></g>
+
+  <!-- Harbour basin and quays -->
+  <path d="M0 650c241-64 399-54 584-9 190 47 366 27 513-9 192-47 337-36 503 14v454H0z" fill="url(#sea)"/>
+  <path d="M0 650c241-64 399-54 584-9 190 47 366 27 513-9 192-47 337-36 503 14v454H0z" fill="url(#waterLines)"/>
+  <path d="M0 636c230-68 408-60 590-17 188 44 354 24 501-11 198-48 352-35 509 14" fill="none" stroke="#d8c49a" stroke-width="25"/>
+  <path d="M39 672c220-51 380-39 540 1 197 49 375 32 530-5 180-43 326-29 452 9" fill="none" stroke="#61594c" stroke-width="13"/>
+
+  <!-- Fairmont hotel and the signature Grand Hotel hairpin -->
+  <g transform="translate(1030 389)">
+    <path d="M0 0h355l77 70v151H0z" fill="#d8cbb4" stroke="#5c554b" stroke-width="5"/>
+    <path d="M0 0h355l77 70H78z" fill="#b98a64"/>
+    <path d="M31 54h350v124H31z" fill="url(#windows)"/>
+    <path d="M0 192h432v29H0z" fill="#8d7a61"/>
+    <path d="M43 22h244" stroke="#eee4d0" stroke-width="8"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1481 582c-83 18-142 27-201 40-70 16-112 37-118 70-5 28 25 50 68 46 55-5 101-43 133-80" stroke="#121718" stroke-width="91"/>
+    <path d="M1481 582c-83 18-142 27-201 40-70 16-112 37-118 70-5 28 25 50 68 46 55-5 101-43 133-80" stroke="url(#road)" stroke-width="70"/>
+    <path d="M1481 582c-83 18-142 27-201 40-70 16-112 37-118 70-5 28 25 50 68 46 55-5 101-43 133-80" stroke="#d7c278" stroke-width="3" stroke-dasharray="18 22"/>
+    <path d="M1457 549c-83 18-150 28-211 44-83 21-132 52-137 97" stroke="#ece8dc" stroke-width="8"/>
+    <path d="M1481 566c-81 18-145 28-204 43-78 20-122 47-128 83" stroke="#be3431" stroke-width="8" stroke-dasharray="22 19"/>
+  </g>
+  <use href="#armco" x="1320" y="533" width="170" height="48" transform="rotate(-12 1405 557)"/>
+  <use href="#armco" x="1114" y="690" width="145" height="41" transform="rotate(9 1186 710)"/>
+
+  <!-- Yacht-lined Port Hercule -->
+  <g><use href="#yacht" x="160" y="655" width="150" height="140" transform="rotate(-8 235 725)"/><use href="#yacht" x="390" y="754" width="120" height="112" transform="rotate(7 450 810)"/><use href="#yacht" x="690" y="644" width="138" height="129" transform="rotate(4 759 708)"/><use href="#yacht" x="1030" y="755" width="114" height="106" transform="rotate(-7 1087 808)"/><use href="#yacht" x="1265" y="648" width="150" height="140" transform="rotate(8 1340 718)"/></g>
+
+  <!-- Original diagram of the Monaco street circuit -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M217 596C156 548 177 487 247 470c62-16 113 21 176 9 72-14 107-78 173-100 73-24 120 9 161 52 42 45 60 103 110 117 53 15 112-26 157-56 67-44 119-63 169-32 43 26 45 71 14 107-31 35-83 53-107 92-23 38-9 75 37 92 53 20 137-4 176 37 31 33 19 76-24 96-49 23-113 5-161 30-41 21-58 68-105 78-57 12-104-31-151-43-65-17-121 32-187 24-60-7-91-62-145-80-61-21-124 11-180-19-45-24-57-76-27-111 34-40 101-40 127-87 18-33-7-72-48-99-40-27-91-31-133-63z" stroke="#111719" stroke-width="48" opacity=".72"/>
+    <path d="M217 596C156 548 177 487 247 470c62-16 113 21 176 9 72-14 107-78 173-100 73-24 120 9 161 52 42 45 60 103 110 117 53 15 112-26 157-56 67-44 119-63 169-32 43 26 45 71 14 107-31 35-83 53-107 92-23 38-9 75 37 92 53 20 137-4 176 37 31 33 19 76-24 96-49 23-113 5-161 30-41 21-58 68-105 78-57 12-104-31-151-43-65-17-121 32-187 24-60-7-91-62-145-80-61-21-124 11-180-19-45-24-57-76-27-111 34-40 101-40 127-87 18-33-7-72-48-99-40-27-91-31-133-63z" stroke="#d6bd78" stroke-width="13"/>
+    <path d="M217 596C156 548 177 487 247 470c62-16 113 21 176 9 72-14 107-78 173-100 73-24 120 9 161 52 42 45 60 103 110 117 53 15 112-26 157-56 67-44 119-63 169-32 43 26 45 71 14 107-31 35-83 53-107 92-23 38-9 75 37 92 53 20 137-4 176 37 31 33 19 76-24 96-49 23-113 5-161 30-41 21-58 68-105 78-57 12-104-31-151-43-65-17-121 32-187 24-60-7-91-62-145-80-61-21-124 11-180-19-45-24-57-76-27-111 34-40 101-40 127-87 18-33-7-72-48-99-40-27-91-31-133-63z" stroke="#f4e6b6" stroke-width="3"/>
+  </g>
+
+  <!-- Tunnel, kerbs, start line and street-circuit cues -->
+  <g>
+    <path d="M845 488c76-65 165-83 246-45 58 27 89 75 79 128l-65-4c4-28-15-52-49-65-53-20-106-3-166 43z" fill="#0a1012" stroke="#bba56e" stroke-width="9"/>
+    <path d="M876 500c67-48 131-60 184-34 30 14 48 35 52 63" fill="none" stroke="#4f5552" stroke-width="24"/>
+    <path d="M874 502c67-48 132-59 185-33" fill="none" stroke="#d9c27d" stroke-width="4" stroke-dasharray="16 17"/>
+    <g fill="#f4d78f" filter="url(#glow)"><circle cx="922" cy="474" r="8"/><circle cx="971" cy="456" r="8"/><circle cx="1020" cy="458" r="8"/></g>
+  </g>
+  <use href="#armco" x="828" y="523" width="170" height="48" transform="rotate(-20 913 547)"/>
+  <g stroke="#dcd6c4" stroke-width="8"><path d="M307 474l20 22M323 466l20 22"/><path d="M1166 873l14 27M1184 868l14 27"/></g>
+  <g stroke-width="8"><path d="M535 393l18 17M553 383l18 17M571 377l18 17" stroke="#bf3431"/><path d="M544 402l18 17M562 392l18 17M580 386l18 17" stroke="#eee5d0"/></g>
+  <g fill="#f1d58b" filter="url(#glow)" opacity=".65"><circle cx="220" cy="593" r="12"/><circle cx="863" cy="548" r="10"/><circle cx="1300" cy="790" r="11"/><circle cx="775" cy="944" r="10"/></g>
+  <path d="M70 1020h1460" stroke="#c5ad6d" stroke-width="3" opacity=".45"/>
+  <text x="80" y="1060" fill="#d9c48a" font-family="Arial, Helvetica, sans-serif" font-size="23" letter-spacing="9">MONTE CARLO · STREET CIRCUIT · 43°44′N 7°25′E</text>
+  <rect width="1600" height="1100" fill="none" stroke="#080b0d" stroke-width="28" opacity=".55"/>
+</svg>

@@ -15,9 +15,12 @@ export interface PosterIllustrationInput {
 }
 
 const EDEN_GARDENS_MASTER = "/venue-assets/eden-gardens/hero-night.svg";
+const MONACO_MASTER = "/venue-assets/circuit-de-monaco/hero-night.svg";
 
 const venueMasters: Readonly<Record<string, string>> = {
   "eden gardens": EDEN_GARDENS_MASTER,
+  "circuit de monaco": MONACO_MASTER,
+  "monaco grand prix": MONACO_MASTER,
 };
 
 const sportFallbacks: Readonly<Record<string, string>> = {
