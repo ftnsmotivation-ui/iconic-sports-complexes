@@ -1,6 +1,7 @@
 'use client';
 
 import { getSportParams } from '@/lib/sportParameters';
+import { CompassRose, VenueMapEngine } from './VenueMapEngine';
 
 export interface PersonalisationData {
   enabled: boolean;
@@ -99,118 +100,6 @@ function splitList(value: string): string[] {
 
 function truncate(value: string, max: number): string {
   return value.length > max ? value.slice(0, max - 1) + '…' : value;
-}
-
-// Sport-specific line-art rendered inside the circular venue-map mark.
-function VenueMark({ sport, color }: { sport: string; color: string }) {
-  const s = sport.toLowerCase();
-  const stroke = color;
-  const sw = 2;
-
-  if (s.includes('cricket')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <ellipse cx="0" cy="0" rx="125" ry="85" />
-        <rect x="-12" y="-62" width="24" height="124" />
-        <line x1="-12" y1="-48" x2="12" y2="-48" />
-        <line x1="-12" y1="48" x2="12" y2="48" />
-      </g>
-    );
-  }
-  if (s.includes('football') || s.includes('soccer')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <rect x="-105" y="-70" width="210" height="140" />
-        <line x1="0" y1="-70" x2="0" y2="70" />
-        <circle cx="0" cy="0" r="28" />
-        <rect x="-105" y="-35" width="26" height="70" />
-        <rect x="79" y="-35" width="26" height="70" />
-      </g>
-    );
-  }
-  if (s.includes('rugby')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <rect x="-115" y="-70" width="230" height="140" />
-        <line x1="0" y1="-70" x2="0" y2="70" strokeDasharray="4 4" />
-        <line x1="-62" y1="-70" x2="-62" y2="70" strokeDasharray="4 4" />
-        <line x1="62" y1="-70" x2="62" y2="70" strokeDasharray="4 4" />
-        <line x1="-115" y1="-40" x2="-102" y2="-40" />
-        <line x1="-115" y1="40" x2="-102" y2="40" />
-        <line x1="-108" y1="-48" x2="-108" y2="48" />
-        <line x1="115" y1="-40" x2="102" y2="-40" />
-        <line x1="115" y1="40" x2="102" y2="40" />
-        <line x1="108" y1="-48" x2="108" y2="48" />
-      </g>
-    );
-  }
-  if (s.includes('tennis')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <rect x="-132" y="-57" width="264" height="114" />
-        <line x1="0" y1="-57" x2="0" y2="57" />
-        <rect x="-79" y="-57" width="158" height="114" />
-        <line x1="-79" y1="0" x2="79" y2="0" />
-      </g>
-    );
-  }
-  if (s.includes('golf')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <path d="M -122 52 C -52 -35, 52 35, 114 -44" />
-        <circle cx="114" cy="-44" r="9" />
-        <line x1="114" y1="-44" x2="114" y2="-83" strokeWidth={sw} />
-        <path d="M 114 -83 L 140 -74 L 114 -65 Z" fill={stroke} stroke="none" />
-      </g>
-    );
-  }
-  if (s.includes('olympic')) {
-    const r = 30;
-    const positions: [number, number][] = [
-      [-61, -13], [0, -13], [61, -13], [-30, 18], [30, 18],
-    ];
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        {positions.map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r={r} />
-        ))}
-      </g>
-    );
-  }
-  if (s.includes('boxing')) {
-    return (
-      <g fill="none" stroke={stroke} strokeWidth={sw}>
-        <rect x="-79" y="-79" width="158" height="158" />
-        <rect x="-61" y="-61" width="122" height="122" />
-        <circle cx="-79" cy="-79" r="7" />
-        <circle cx="79" cy="-79" r="7" />
-        <circle cx="-79" cy="79" r="7" />
-        <circle cx="79" cy="79" r="7" />
-      </g>
-    );
-  }
-  // Default: motorsport / circuit track outline
-  return (
-    <g fill="none" stroke={stroke} strokeWidth={sw}>
-      <rect x="-122" y="-79" width="244" height="158" rx="61" />
-      <rect x="-96" y="-53" width="192" height="105" rx="48" />
-      <line x1="0" y1="79" x2="0" y2="53" strokeWidth={sw + 1} />
-    </g>
-  );
-}
-
-function CompassRose({ color }: { color: string }) {
-  return (
-    <g stroke={color} fill="none" strokeWidth="1.5">
-      <circle cx="0" cy="0" r="22" />
-      <line x1="0" y1="-22" x2="0" y2="22" />
-      <line x1="-22" y1="0" x2="22" y2="0" />
-      <path d="M 0 -18 L 4 0 L 0 18 L -4 0 Z" fill={color} stroke="none" />
-      <text x="0" y="-27" textAnchor="middle" fontSize="10" fill={color} fontWeight="bold">
-        N
-      </text>
-    </g>
-  );
 }
 
 // Procedural laurel branch: soft, rounded, overlapping leaves alternating
@@ -617,19 +506,7 @@ export default function PosterDisplay({
 
         {has('venueMap') && (
           <g transform="translate(400, 290)">
-            <circle r="165" fill="none" stroke={theme.muted} strokeWidth="1" />
-            <circle r="152" fill="none" stroke={theme.muted} strokeWidth="1" />
-            {Array.from({ length: 24 }).map((_, i) => {
-              const angle = (i * 15 * Math.PI) / 180;
-              const x1 = Math.cos(angle) * 152;
-              const y1 = Math.sin(angle) * 152;
-              const x2 = Math.cos(angle) * 161;
-              const y2 = Math.sin(angle) * 161;
-              return (
-                <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={theme.muted} strokeWidth="1" />
-              );
-            })}
-            <VenueMark sport={sport} color={theme.accent} />
+            <VenueMapEngine sport={sport} venueName={venueName} color={theme.accent} mutedColor={theme.muted} coordinates={coordinates} />
           </g>
         )}
 
