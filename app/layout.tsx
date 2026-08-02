@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import OfflineBootstrap from "@/components/Studio/OfflineBootstrap";
 
 // Removed problematic Geist font imports - using system fonts
 
@@ -19,6 +20,7 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <OfflineBootstrap />
         <header className="fixed top-0 left-0 right-0 z-50 border-b border-amber-700 bg-black/80 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <h1 className="text-2xl font-serif font-bold text-amber-500 tracking-widest">
