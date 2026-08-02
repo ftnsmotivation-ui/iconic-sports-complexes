@@ -63,7 +63,7 @@ export async function renderPosterSvg(model: PosterModel, settings: ExportSettin
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${settings.dimensionsMm.width}mm" height="${settings.dimensionsMm.height}mm" viewBox="0 0 800 1100" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="poster-title poster-description">
   <title id="poster-title">${xml(model.identity.venueName)} collector poster</title>
   <desc id="poster-description">Vector artwork prepared by ISC Studio in ${xml(model.styleId)} style.</desc>
-  <metadata>format=svg; dpi=${settings.dpi}; colour=rgb/srgb; trim=${settings.dimensionsMm.width}x${settings.dimensionsMm.height}mm</metadata>
+  <metadata>format=svg; dpi=${settings.dpi}; colour=${settings.colour.mode}/${settings.colour.profile}; conversion=${settings.colour.conversion}; trim=${settings.dimensionsMm.width}x${settings.dimensionsMm.height}mm</metadata>
   <defs>
     <linearGradient id="hero-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${xml(colours.background)}" stop-opacity="0"/><stop offset=".55" stop-color="${xml(colours.background)}" stop-opacity=".12"/><stop offset="1" stop-color="${xml(colours.background)}" stop-opacity="1"/></linearGradient>
     <radialGradient id="vignette"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".48"/></radialGradient>

@@ -1,6 +1,7 @@
 import type { PosterModel } from '@/components/PosterGenerator/PosterModel';
 
 import type { ExportFormat, ExportSettings } from './ExportSettings';
+import { assertColourConversionAvailable } from './ColourManagement';
 
 export interface ExportRequest {
   model: PosterModel;
@@ -38,6 +39,7 @@ export class ExportService {
   }
 
   async create(request: ExportRequest): Promise<ExportArtifact> {
+    assertColourConversionAvailable(request.settings.colour);
     const adapter = this.adapters.get(request.settings.format);
     if (!adapter) throw new UnsupportedExportFormatError(request.settings.format);
     return adapter.export(request);

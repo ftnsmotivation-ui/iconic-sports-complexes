@@ -1,3 +1,5 @@
+import type { ExportColourSettings } from './ColourManagement';
+
 export type ExportFormat = 'svg' | 'png' | 'jpeg' | 'pdf' | 'eps' | 'tiff';
 export type ExportDpi = 150 | 300 | 600;
 export type ExportSizeId = 'a4' | 'a3' | 'a2' | 'a1' | 'a0' | '18x24' | '24x36' | 'custom';
@@ -15,10 +17,7 @@ export interface ExportSettings {
   bleedMm: number;
   cropMarks: boolean;
   safeMarginMm: number;
-  colour: {
-    mode: 'rgb';
-    profile: 'srgb';
-  };
+  colour: ExportColourSettings;
 }
 
 export const exportSizes: Readonly<Record<Exclude<ExportSizeId, 'custom'>, ExportDimensionsMm>> = {
@@ -39,7 +38,7 @@ export const defaultExportSettings: ExportSettings = {
   bleedMm: 3,
   cropMarks: true,
   safeMarginMm: 5,
-  colour: { mode: 'rgb', profile: 'srgb' },
+  colour: { mode: 'rgb', profile: 'srgb', conversion: 'native' },
 };
 
 export const MAX_RASTER_PIXELS = 600_000_000;
