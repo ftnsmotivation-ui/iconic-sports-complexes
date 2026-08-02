@@ -16,6 +16,9 @@ import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
 import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components/Studio/StudioDraft";
 import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportSettings";
+import { ExportService } from "@/lib/export/ExportService";
+import { SvgExportAdapter } from "@/lib/export/SvgExportAdapter";
+import { downloadArtifact } from "@/lib/export/downloadArtifact";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -45,6 +48,8 @@ export default function StudioPreviewPage() {
   const [draftReady, setDraftReady] = useState(false);
   const [catalogueRevision, setCatalogueRevision] = useState(0);
   const [exportSettings, setExportSettings] = useState<ExportSettings>(defaultExportSettings);
+  const [exporting, setExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState('');
   const restoreTarget = useRef({ competition: '', venueName: '' });
 
   useEffect(() => {
@@ -136,6 +141,22 @@ export default function StudioPreviewPage() {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
   };
   const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation, selectedConcept) : null;
+  const exportPoster = async () => {
+    if (!posterModel) return;
+    setExporting(true);
+    setExportMessage('');
+    try {
+      const service = new ExportService();
+      service.register(new SvgExportAdapter());
+      const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
+      downloadArtifact(artifact);
+      setExportMessage(`${artifact.filename} is ready.`);
+    } catch (error) {
+      setExportMessage(error instanceof Error ? error.message : 'Unable to create export.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <StudioShell
@@ -147,7 +168,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} />}
     />
   );
 }
