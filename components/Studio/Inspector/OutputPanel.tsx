@@ -13,7 +13,7 @@ interface OutputPanelProps {
 const sizeLabels: Readonly<Record<Exclude<ExportSizeId, 'custom'>, string>> = { a4: 'A4 Portrait', a3: 'A3 Portrait', a2: 'A2 Portrait', a1: 'A1 Portrait', a0: 'A0 Portrait', '18x24': '18 × 24 inch', '24x36': '24 × 36 inch' };
 
 export default function OutputPanel({ settings, onSettingsChange, onResetStudio, exporting, exportMessage, onExport }: OutputPanelProps) {
-  const formatSupported = settings.format === 'svg' || settings.format === 'png' || settings.format === 'jpeg' || settings.format === 'pdf';
+  const formatSupported = settings.format === 'svg' || settings.format === 'png' || settings.format === 'jpeg' || settings.format === 'pdf' || settings.format === 'tiff';
   return (
     <>
       <div className="my-7 h-px bg-white/10" />
@@ -31,6 +31,7 @@ export default function OutputPanel({ settings, onSettingsChange, onResetStudio,
         </select>
       </label>
       <label className="mt-4 block"><span className="mb-2 block text-[10px] uppercase tracking-[0.2em] text-white/35">Format</span><select value={settings.format} onChange={(event) => onSettingsChange({ ...settings, format: event.target.value as ExportFormat })} className="w-full rounded-lg border border-white/10 bg-[#171b21] px-3 py-3 text-sm text-white outline-none">{(['svg', 'png', 'jpeg', 'pdf', 'eps', 'tiff'] as ExportFormat[]).map((format) => <option key={format} value={format}>{format.toUpperCase()}</option>)}</select></label>
+      {settings.format === 'eps' && <p className="mt-2 text-[10px] leading-4 text-amber-200/55">EPS requires a trusted PostScript converter and is unavailable in this runtime. SVG and PDF remain vector-first alternatives.</p>}
       <div className="mt-4 space-y-2 text-xs text-white/60">
         <label className="flex items-center gap-2"><input type="checkbox" checked={settings.bleedMm > 0} onChange={(event) => onSettingsChange({ ...settings, bleedMm: event.target.checked ? 3 : 0 })} className="h-4 w-4 accent-amber-300"/>3 mm bleed</label>
         <label className="flex items-center gap-2"><input type="checkbox" checked={settings.cropMarks} onChange={(event) => onSettingsChange({ ...settings, cropMarks: event.target.checked })} className="h-4 w-4 accent-amber-300"/>Crop marks</label>

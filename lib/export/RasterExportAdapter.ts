@@ -2,7 +2,7 @@ import type { ExportAdapter, ExportArtifact, ExportRequest } from './ExportServi
 import { MAX_RASTER_DIMENSION, MAX_RASTER_PIXELS, rasterPixelDimensions } from './ExportSettings';
 import { renderPosterSvg } from './renderPosterSvg';
 
-type RasterFormat = 'png' | 'jpeg';
+type RasterFormat = 'png' | 'jpeg' | 'tiff';
 
 function safeFilename(value: string): string {
   return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'isc-poster';
@@ -29,8 +29,8 @@ export class RasterExportAdapter implements ExportAdapter {
     }
     return {
       bytes: new Uint8Array(await response.arrayBuffer()),
-      filename: `${safeFilename(request.filename)}-${request.settings.dpi}dpi.${this.format === 'jpeg' ? 'jpg' : 'png'}`,
-      mimeType: this.format === 'jpeg' ? 'image/jpeg' : 'image/png',
+      filename: `${safeFilename(request.filename)}-${request.settings.dpi}dpi.${this.format === 'jpeg' ? 'jpg' : this.format === 'tiff' ? 'tif' : 'png'}`,
+      mimeType: this.format === 'jpeg' ? 'image/jpeg' : this.format === 'tiff' ? 'image/tiff' : 'image/png',
     };
   }
 }

@@ -153,6 +153,7 @@ export default function StudioPreviewPage() {
       service.register(new RasterExportAdapter('png'));
       service.register(new RasterExportAdapter('jpeg'));
       service.register(new PdfExportAdapter());
+      service.register(new RasterExportAdapter('tiff'));
       const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
