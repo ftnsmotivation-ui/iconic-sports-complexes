@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
 import type { PosterContentId } from "@/components/PosterGenerator/PosterContent";
+import { emptyPosterPersonalisation, type PosterPersonalisationInput } from "@/components/PosterGenerator/PosterPersonalisation";
 import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
 import type { StudioParameter } from "@/components/Studio/Sidebar/ParameterPanel";
 import PreviewCanvas from "@/components/Studio/Preview/PreviewCanvas";
@@ -31,6 +32,7 @@ export default function StudioPreviewPage() {
   const [venues, setVenues] = useState<StudioVenue[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<StudioStyle>("collector");
   const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(["venueFacts", "venueMap", "collectorNumber"]);
+  const [personalisation, setPersonalisation] = useState<PosterPersonalisationInput>(emptyPosterPersonalisation);
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
 
@@ -82,7 +84,7 @@ export default function StudioPreviewPage() {
   const toggleParameter = (parameter: PosterContentId) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
   };
-  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters) : null;
+  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation) : null;
 
   return (
     <StudioShell
@@ -94,7 +96,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} />}
     />
   );
 }

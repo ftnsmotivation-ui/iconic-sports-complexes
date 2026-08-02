@@ -1,6 +1,7 @@
 import { resolvePosterDirection, type PosterDirection } from "./PosterDirection";
 import { resolvePosterContent, type PosterContentId, type PosterContentVisibility } from "./PosterContent";
 import { resolvePosterIllustration, type PosterIllustrationPlan } from "./PosterIllustrationDirector";
+import { resolvePosterPersonalisation, type PosterPersonalisation, type PosterPersonalisationInput } from "./PosterPersonalisation";
 import { resolvePosterHistory, type PosterHistoryItem, type PosterHistorySource } from "./PosterHistory";
 import type { PosterStyleId } from "./PosterStyleProfiles";
 
@@ -50,6 +51,7 @@ export interface PosterModel {
   direction: PosterDirection;
   styleId: PosterStyleId;
   content: PosterContentVisibility;
+  personalisation: PosterPersonalisation;
 }
 
 function normalizeCapacity(value: number | string): string {
@@ -58,7 +60,7 @@ function normalizeCapacity(value: number | string): string {
   return Number.isFinite(parsed) ? parsed.toLocaleString() : String(value);
 }
 
-export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector", selectedContent?: readonly PosterContentId[]): PosterModel {
+export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector", selectedContent?: readonly PosterContentId[], personalisation?: PosterPersonalisationInput): PosterModel {
   const sport = source.sport || "Sporting Venue";
   const direction = resolvePosterDirection(source.venueName);
 
@@ -94,5 +96,6 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
     direction,
     styleId,
     content: resolvePosterContent(selectedContent),
+    personalisation: resolvePosterPersonalisation(personalisation),
   };
 }

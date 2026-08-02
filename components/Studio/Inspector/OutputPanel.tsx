@@ -4,7 +4,7 @@ export default function OutputPanel() {
   return (
     <>
       <div className="my-7 h-px bg-white/10" />
-      <PanelHeading number="04" title="Output" description="Prepare the commercial artwork." />
+      <PanelHeading number="05" title="Output" description="Prepare the commercial artwork." />
       <label className="mt-5 block">
         <span className="mb-2 block text-[10px] uppercase tracking-[0.2em] text-white/35">Print size</span>
         <select className="w-full rounded-lg border border-white/10 bg-[#171b21] px-3 py-3 text-sm text-white outline-none">

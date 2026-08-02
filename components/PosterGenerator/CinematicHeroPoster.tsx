@@ -4,6 +4,7 @@ import React from 'react';
 
 import { resolvePosterColours } from './PosterColourDirector';
 import HistoricContentModule from './HistoricContentModule';
+import PersonalisationModule from './PersonalisationModule';
 import type { PosterModel } from './PosterModel';
 import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
@@ -15,7 +16,7 @@ export interface CinematicHeroPosterProps {
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
-  const { identity, facts, collector, narrative, history, illustration, direction, content } = model;
+  const { identity, facts, collector, narrative, history, illustration, direction, content, personalisation } = model;
   const { venueName, city, country, countryFlag, competition, sport } = identity;
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
@@ -181,24 +182,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           }}
         >
           <div>
-            <div
-              style={{
-                color: colours.accentMuted,
-                marginBottom: 12,
-                ...typography.sectionLabel,
-              }}
-            >
-              The Venue
-            </div>
-            <div
-              style={{
-                fontStyle: 'italic',
-                color: colours.foreground,
-                ...typography.quote,
-              }}
-            >
-              “{collector.inscription}”
-            </div>
+            <PersonalisationModule personalisation={personalisation} fallbackInscription={collector.inscription} accentColor={colours.accentMuted} textColor={colours.foreground} mutedColor={colours.muted} labelStyle={typography.sectionLabel} quoteStyle={typography.quote} bodyStyle={typography.body}/>
           </div>
 
           {(content.historicMoments || content.venueMap || content.compassRose) && <div
