@@ -15,22 +15,16 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "canvas": "^3.2.3",
-    "fabric": "^7.4.0",
     "next": "16.2.12",
     "pdf-lib": "^1.17.1",
-    "pdf-parse": "^2.4.5",
-    "pdfkit": "^0.19.1",
-    "png-js": "^2.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sharp": "^0.35.3",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/pdfkit": "^0.17.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "electron": "^43.2.0",
@@ -38,5 +32,9 @@
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "8.5.25",
+    "sharp": "$sharp"
   }
 }

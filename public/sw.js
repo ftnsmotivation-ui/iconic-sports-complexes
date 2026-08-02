@@ -1,4 +1,4 @@
-const CACHE_NAME = 'isc-studio-offline-v1';
+const CACHE_NAME = 'isc-studio-offline-v2';
 const CORE_ASSETS = [
   '/',
   '/studio-preview',
@@ -6,6 +6,9 @@ const CORE_ASSETS = [
   '/databases/iconic-venues.xlsx',
   '/venue-assets/eden-gardens/hero-night.svg',
   '/venue-assets/circuit-de-monaco/hero-night.svg',
+  '/venue-assets/santiago-bernabeu/hero-night.svg',
+  '/venue-assets/st-andrews/hero-links.svg',
+  '/venue-assets/madison-square-garden/hero-night.svg',
 ];
 
 async function cacheResponse(cache, url) {

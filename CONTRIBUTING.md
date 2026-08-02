@@ -120,7 +120,7 @@ Use GitHub issues for all reports with appropriate labels.
 ### Project Structure
 Follow the existing folder structure. When adding new features:
 - Create components in `/components`
-- Add types in `/lib/types`
+- Keep types beside their owning feature or in the relevant `/lib` module
 - Add utilities in `/lib/utils`
 - Add API routes in `/app/api`
 

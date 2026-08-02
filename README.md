@@ -1,129 +1,69 @@
-# Iconic Sports Complexes - Museum Quality Poster Generator
+# Iconic Sports Complexes Studio
 
-A professional cross-platform web application for generating museum-quality, premium sporting venue posters suitable for commercial printing, fine art galleries, and online marketplaces like Etsy.
+ISC Studio is a vector-first poster workspace for producing collector artwork of iconic sporting venues. Venue facts come from the bundled Excel workbook, while typed directors control layout, typography, colour, illustration, and export decisions.
 
-## 🎨 Features
+## Capabilities
 
-- **Sport Selection**: Curated list of major sports with custom sport entry
-- **Smart Database Management**: Excel-based offline database with automatic updates
-- **Multiple Venue Parameters**: 30+ customizable poster elements
-- **AI-Powered Design**: Museum-quality layouts with intelligent typography and composition
-- **Multiple Export Formats**: 
-  - Vector: PDF, SVG, EPS
-  - Raster: PNG, JPEG, TIFF
-- **Professional Print Options**:
-  - Multiple paper sizes (A0-A6, Imperial)
-  - Adjustable resolution (150-600 DPI)
-  - CMYK/RGB color modes
-  - Bleed, crop marks, and safe margins
-- **One-Click Publishing**:
-  - Print package
-  - Marketplace package (Etsy-ready)
-  - Social media package
-  - Marketing mockups
-  - Metadata generation
+- Excel-driven sport, competition, and venue catalogue with offline caching
+- Collector, Editorial, and Atlas poster systems with three composition concepts
+- Venue-specific vector masters for Monaco, Eden Gardens, Santiago Bernabéu, St Andrews, and Madison Square Garden
+- Personalised “I Was There” editions and frame previews
+- SVG, PDF, PNG, JPEG, and TIFF production exports
+- Print, Etsy, social/website, and marketing-mockup packages
+- A sandboxed Electron desktop shell around the same tested Next.js application
 
-## 🚀 Getting Started
+EPS export remains intentionally unavailable until a trusted PostScript converter is installed. CMYK output is blocked until a licensed ICC conversion workflow is configured; sRGB exports remain available.
 
-### Prerequisites
-- Node.js 18+ and npm/yarn/bun
-- Git
+## Requirements
 
-### Installation
+- Node.js 20 or newer
+- npm
+
+## Development
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/iconic-sports-complexes.git
-cd iconic-sports-complexes
-
-# Install dependencies
 npm install
-```
-
-### Development
-
-```bash
-# Start the development server
 npm run dev
-
-# Open browser to http://localhost:3000
 ```
 
-### Build for Production
+Open `http://localhost:3000`; the root route redirects to `/studio-preview`.
+
+## Verification
 
 ```bash
-# Build the application
+npm test
+npm run qa:visual
 npm run build
+```
 
-# Start production server
+The visual QA command writes a 15-poster contact sheet and individual PNG previews to `.next/visual-qa/`. Generated QA files are build artifacts and are not committed.
+
+## Production and Desktop
+
+```bash
+npm run build
 npm start
+
+# Desktop development
+npm run desktop:dev
+
+# Desktop production shell after a build
+npm run desktop:start
 ```
 
-## 📊 Supported Sports
+See [desktop/README.md](desktop/README.md) for packaging architecture and security boundaries. Platform installers and code signing are release-engineering tasks and require external credentials.
 
-### Preset Sports
-- Formula 1
-- Football Stadiums
-- Cricket Grounds
-- Tennis Venues
-- Golf Courses
-- Rugby Stadiums
-- Olympic Venues
-- Boxing Arenas
+## Architecture
 
-### Custom Sports
-Add any sport dynamically (Swimming, Badminton, Baseball, Basketball, etc.)
+The primary flow is:
 
-## 🗂️ Project Structure
-
-```
-iconic-sports-complexes/
-├── app/
-│   ├── api/               # API routes
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Main workflow
-│   └── globals.css        # Global styles
-├── components/
-│   ├── SportSelection/    # Sport selector
-│   ├── CompetitionSelection/
-│   ├── VenueSelection/
-│   ├── ParameterSelection/
-│   ├── StyleSelection/
-│   ├── Preview/
-│   └── Export/
-├── lib/
-│   ├── types/             # TypeScript interfaces
-│   ├── database/          # Excel handling
-│   └── poster/            # Generation engine
-├── public/
-│   └── databases/         # Excel data files
-└── package.json
+```text
+Excel workbook → repository/API → Studio state → poster model
+→ directors → vector renderer → export adapters/packages
 ```
 
-## 🎭 Workflow
+The workbook at `public/databases/iconic-venues.xlsx` is the venue-data source of truth. Renderers draw; directors decide; repositories provide data. See [ARCHITECTURE.md](ARCHITECTURE.md) for layer responsibilities.
 
-1. **Sport Selection** - Choose from presets or add custom sport
-2. **Competition Selection** - Pick competition for the sport
-3. **Venue Selection** - Choose specific venue
-4. **Parameters Selection** - Select poster elements (30+)
-5. **Style Selection** - AI generates 3 design concepts
-6. **Preview** - Review poster with frame options
-7. **Generate** - Create final artwork
-8. **Export** - Multiple formats and sizes
+## License
 
-## 📦 Export Options
-
-### Sizes: A0-A6, 11×14 to 30×40, Custom
-### Resolutions: 150, 300, 600 DPI
-### Formats: PDF, SVG, EPS, PNG, JPEG, TIFF
-### Print: CMYK/RGB, Bleed, Crop Marks, ICC Profile
-
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
+ISC Studio is MIT licensed. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
