@@ -19,6 +19,7 @@ import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportS
 import { downloadArtifact } from "@/lib/export/downloadArtifact";
 import { createStudioExportService } from "@/lib/export/createStudioExportService";
 import { createPrintPackage } from "@/lib/export/PrintPackageService";
+import { createEtsyPackage } from "@/lib/export/EtsyPackageService";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -170,6 +171,20 @@ export default function StudioPreviewPage() {
       setExporting(false);
     }
   };
+  const exportEtsyPackage = async () => {
+    if (!posterModel) return;
+    setExporting(true);
+    setExportMessage('Starting Etsy package…');
+    try {
+      const artifact = await createEtsyPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
+      downloadArtifact(artifact);
+      setExportMessage(`${artifact.filename} is ready.`);
+    } catch (error) {
+      setExportMessage(error instanceof Error ? error.message : 'Unable to create Etsy package.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <StudioShell
@@ -181,7 +196,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} onExportEtsyPackage={() => void exportEtsyPackage()} />}
     />
   );
 }
