@@ -14,9 +14,10 @@ import { CompassRose, VenueMapEngine } from './VenueMapEngine';
 
 export interface CinematicHeroPosterProps {
   model: PosterModel;
+  presentation?: 'preview' | 'export';
 }
 
-export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
+export default function CinematicHeroPoster({ model, presentation = 'preview' }: CinematicHeroPosterProps) {
   const { identity, facts, collector, narrative, history, illustration, direction, content, personalisation } = model;
   const { venueName, city, country, countryFlag, competition, sport } = identity;
   const style = resolvePosterStyle(model.styleId);
@@ -39,14 +40,14 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       title={direction.atmosphere}
       style={{
         width: '100%',
-        maxWidth: 800,
+        maxWidth: presentation === 'preview' ? 800 : 'none',
         aspectRatio: '800 / 1100',
-        margin: '0 auto',
+        margin: presentation === 'preview' ? '0 auto' : 0,
         position: 'relative',
         overflow: 'hidden',
         background: colours.background,
         color: colours.foreground,
-        boxShadow: '0 28px 80px rgba(0,0,0,.52)',
+        boxShadow: presentation === 'preview' ? '0 28px 80px rgba(0,0,0,.52)' : 'none',
         fontFamily: style.bodyFont,
       }}
     >

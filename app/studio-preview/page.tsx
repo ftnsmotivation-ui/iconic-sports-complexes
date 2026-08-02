@@ -15,6 +15,7 @@ import VenuePanel, { type StudioVenue } from "@/components/Studio/Sidebar/VenueP
 import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
 import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components/Studio/StudioDraft";
+import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportSettings";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -43,6 +44,7 @@ export default function StudioPreviewPage() {
   const [catalogueError, setCatalogueError] = useState("");
   const [draftReady, setDraftReady] = useState(false);
   const [catalogueRevision, setCatalogueRevision] = useState(0);
+  const [exportSettings, setExportSettings] = useState<ExportSettings>(defaultExportSettings);
   const restoreTarget = useRef({ competition: '', venueName: '' });
 
   useEffect(() => {
@@ -126,6 +128,7 @@ export default function StudioPreviewPage() {
     setPersonalisation({ ...emptyPosterPersonalisation });
     setSelectedConcept('monument');
     setSelectedFrame('none');
+    setExportSettings(defaultExportSettings);
     setCatalogueRevision((current) => current + 1);
   };
 
@@ -144,7 +147,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} />}
     />
   );
 }
