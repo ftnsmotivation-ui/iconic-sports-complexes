@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import { resolvePosterColours } from './PosterColourDirector';
 import type { PosterModel } from './PosterModel';
 import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
@@ -17,9 +18,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
   const typography = resolvePosterTypography(model, layout, style);
-  const accent = direction.colourPalette[1] ?? style.accent;
-  const background = model.styleId === 'collector' ? direction.colourPalette[0] ?? style.background : style.background;
-  const foreground = model.styleId === 'collector' ? direction.colourPalette[2] ?? style.foreground : style.foreground;
+  const colours = resolvePosterColours(model, style);
   const densityFactLimits = { minimal: 2, balanced: 3, rich: 4 } as const;
   const factLimit = Math.min(style.factLimit, densityFactLimits[direction.informationDensity]);
 
@@ -38,8 +37,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         margin: '0 auto',
         position: 'relative',
         overflow: 'hidden',
-        background,
-        color: foreground,
+        background: colours.background,
+        color: colours.foreground,
         boxShadow: '0 28px 80px rgba(0,0,0,.52)',
         fontFamily: style.bodyFont,
       }}
@@ -66,14 +65,14 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         style={{
           position: 'absolute',
           inset: 0,
-          background: style.heroOverlay,
+          background: colours.heroOverlay,
         }}
       />
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: style.vignette,
+          background: colours.vignette,
         }}
       />
 
@@ -83,15 +82,15 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             position: 'absolute',
             inset: 0,
             opacity: 0.16,
-            backgroundImage: 'linear-gradient(rgba(209,183,122,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(209,183,122,.45) 1px,transparent 1px)',
+            backgroundImage: `linear-gradient(${colours.gridLine} 1px,transparent 1px),linear-gradient(90deg,${colours.gridLine} 1px,transparent 1px)`,
             backgroundSize: '40px 40px',
           }}
         />
       )}
 
       {/* Collector borders */}
-      <div style={{ position: 'absolute', inset: layout.borderInsets[0], border: `1.5px solid ${accent}` }} />
-      {layout.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: layout.borderInsets[1], border: `1px solid ${style.borderSecondary}` }} />}
+      <div style={{ position: 'absolute', inset: layout.borderInsets[0], border: `1.5px solid ${colours.accent}` }} />
+      {layout.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: layout.borderInsets[1], border: `1px solid ${colours.borderSecondary}` }} />}
 
       {/* Masthead */}
       <div
@@ -103,7 +102,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          color: accent,
+          color: colours.accent,
           ...typography.masthead,
         }}
       >
@@ -123,7 +122,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       >
         <div
           style={{
-            color: accent,
+            color: colours.accent,
             marginBottom: 15,
             ...typography.subtitle,
           }}
@@ -142,7 +141,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             marginTop: 19,
-            color: accent,
+            color: colours.accent,
             ...typography.metadata,
           }}
         >
@@ -165,7 +164,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             height: 2,
-            background: `linear-gradient(90deg,transparent,${accent},transparent)`,
+            background: `linear-gradient(90deg,transparent,${colours.accent},transparent)`,
           }}
         />
 
@@ -181,7 +180,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           <div>
             <div
               style={{
-                color: style.accentMuted,
+                color: colours.accentMuted,
                 marginBottom: 12,
                 ...typography.sectionLabel,
               }}
@@ -191,7 +190,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             <div
               style={{
                 fontStyle: 'italic',
-                color: foreground,
+                color: colours.foreground,
                 ...typography.quote,
               }}
             >
@@ -201,9 +200,9 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
 
           {style.informationDensity !== 'minimal' && <div
             style={{
-              borderLeft: `1px solid ${style.borderSecondary}`,
+              borderLeft: `1px solid ${colours.borderSecondary}`,
               paddingLeft: 25,
-              color: style.muted,
+              color: colours.muted,
               ...typography.body,
             }}
           >
@@ -215,8 +214,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${factLimit}, 1fr)`,
-            borderTop: `1px solid ${style.borderSecondary}`,
-            borderBottom: `1px solid ${style.borderSecondary}`,
+            borderTop: `1px solid ${colours.borderSecondary}`,
+            borderBottom: `1px solid ${colours.borderSecondary}`,
           }}
         >
           {[
@@ -229,12 +228,12 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               key={label}
               style={{
                 padding: '19px 16px 18px',
-                borderLeft: index ? `1px solid ${style.borderSecondary}` : 'none',
+                borderLeft: index ? `1px solid ${colours.borderSecondary}` : 'none',
               }}
             >
               <div
                 style={{
-                  color: style.accentMuted,
+                  color: colours.accentMuted,
                   marginBottom: 9,
                   ...typography.factLabel,
                 }}
@@ -243,7 +242,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               </div>
               <div
                 style={{
-                  color: foreground,
+                  color: colours.foreground,
                   ...typography.factValue,
                   fontSize: value.length > 18 ? 14 : typography.factValue.fontSize,
                 }}
@@ -266,7 +265,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           <div>
             <div
               style={{
-                color: style.accentMuted,
+                color: colours.accentMuted,
                 ...typography.caption,
               }}
             >
@@ -274,7 +273,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             </div>
             <div
               style={{
-                color: style.subtle,
+                color: colours.subtle,
                 marginTop: 7,
                 ...typography.micro,
               }}
@@ -286,7 +285,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           <div
             style={{
               textAlign: 'right',
-              color: style.accentMuted,
+              color: colours.accentMuted,
               ...typography.micro,
               letterSpacing: '2.3px',
             }}

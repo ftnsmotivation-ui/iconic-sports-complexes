@@ -3,6 +3,7 @@ import type { PosterStyleId } from "./PosterStyleProfiles";
 
 export interface PosterModelSource {
   venueName: string;
+  sport?: string;
   city: string;
   country: string;
   opened: number | string;
@@ -22,6 +23,7 @@ export interface PosterModelSource {
 export interface PosterModel {
   identity: {
     venueName: string;
+    sport: string;
     city: string;
     country: string;
     competition: string;
@@ -56,6 +58,7 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
   return {
     identity: {
       venueName: source.venueName,
+      sport: source.sport || "Sporting Venue",
       city: source.city,
       country: source.country,
       competition: source.competition || "ICONIC SPORTING VENUE",
