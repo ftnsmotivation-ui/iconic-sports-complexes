@@ -13,7 +13,7 @@ interface OutputPanelProps {
 const sizeLabels: Readonly<Record<Exclude<ExportSizeId, 'custom'>, string>> = { a4: 'A4 Portrait', a3: 'A3 Portrait', a2: 'A2 Portrait', a1: 'A1 Portrait', a0: 'A0 Portrait', '18x24': '18 × 24 inch', '24x36': '24 × 36 inch' };
 
 export default function OutputPanel({ settings, onSettingsChange, onResetStudio, exporting, exportMessage, onExport }: OutputPanelProps) {
-  const formatSupported = settings.format === 'svg' || settings.format === 'png' || settings.format === 'jpeg';
+  const formatSupported = settings.format === 'svg' || settings.format === 'png' || settings.format === 'jpeg' || settings.format === 'pdf';
   return (
     <>
       <div className="my-7 h-px bg-white/10" />

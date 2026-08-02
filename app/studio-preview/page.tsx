@@ -20,6 +20,7 @@ import { ExportService } from "@/lib/export/ExportService";
 import { SvgExportAdapter } from "@/lib/export/SvgExportAdapter";
 import { downloadArtifact } from "@/lib/export/downloadArtifact";
 import { RasterExportAdapter } from "@/lib/export/RasterExportAdapter";
+import { PdfExportAdapter } from "@/lib/export/PdfExportAdapter";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -151,6 +152,7 @@ export default function StudioPreviewPage() {
       service.register(new SvgExportAdapter());
       service.register(new RasterExportAdapter('png'));
       service.register(new RasterExportAdapter('jpeg'));
+      service.register(new PdfExportAdapter());
       const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);

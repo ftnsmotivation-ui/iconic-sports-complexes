@@ -1,151 +1,110 @@
 import { NextResponse } from 'next/server';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, rgb } from 'pdf-lib';
 import sharp from 'sharp';
 
+import { MAX_RASTER_DIMENSION, MAX_RASTER_PIXELS, type ExportDpi } from '@/lib/export/ExportSettings';
+
 const MM_PER_INCH = 25.4;
-const BLEED_MM = 3;
+const POINTS_PER_INCH = 72;
 const CROP_MARK_MARGIN_PT = 24;
 const CROP_MARK_GAP_PT = 6;
-const CROP_MARK_LEN_PT = 14;
-const RASTER_DPI = 300;
+const CROP_MARK_LENGTH_PT = 14;
+const supportedDpi: readonly ExportDpi[] = [150, 300, 600];
+
+interface PdfRequest {
+  svgContent?: unknown;
+  filename?: unknown;
+  widthMm?: unknown;
+  heightMm?: unknown;
+  widthIn?: unknown;
+  heightIn?: unknown;
+  dpi?: unknown;
+  bleedMm?: unknown;
+  bleed?: unknown;
+  cropMarks?: unknown;
+  safeMarginMm?: unknown;
+}
+
+interface PdfOptions {
+  widthMm: number;
+  heightMm: number;
+  dpi: ExportDpi;
+  bleedMm: number;
+  cropMarks: boolean;
+  safeMarginMm: number;
+}
+
+function mmToPoints(value: number): number {
+  return value / MM_PER_INCH * POINTS_PER_INCH;
+}
+
+function safeFilename(value: unknown): string {
+  return String(value || 'poster').replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '') || 'poster';
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const {
-      svgContent,
-      filename = 'poster',
-      widthIn = 30,
-      heightIn = 40,
-      bleed = true,
-      cropMarks = true,
-    } = body;
+    const body = await request.json() as PdfRequest;
+    if (typeof body.svgContent !== 'string' || !body.svgContent.includes('<svg')) return NextResponse.json({ error: 'SVG content required' }, { status: 400 });
+    const widthMm = Number(body.widthMm ?? Number(body.widthIn ?? 30) * MM_PER_INCH);
+    const heightMm = Number(body.heightMm ?? Number(body.heightIn ?? 40) * MM_PER_INCH);
+    const dpi = Number(body.dpi ?? 300) as ExportDpi;
+    const bleedMm = Number(body.bleedMm ?? (body.bleed === false ? 0 : 3));
+    const safeMarginMm = Number(body.safeMarginMm ?? 0);
+    if (![widthMm, heightMm, bleedMm, safeMarginMm].every(Number.isFinite) || widthMm <= 0 || heightMm <= 0 || bleedMm < 0 || safeMarginMm < 0) return NextResponse.json({ error: 'Invalid print dimensions.' }, { status: 400 });
+    if (!supportedDpi.includes(dpi)) return NextResponse.json({ error: 'DPI must be 150, 300, or 600.' }, { status: 400 });
 
-    if (!svgContent) {
-      return NextResponse.json(
-        { error: 'SVG content required' },
-        { status: 400 }
-      );
-    }
-
-    const pdfBuffer = await createPosterPDF(svgContent, {
-      widthIn,
-      heightIn,
-      bleed,
-      cropMarks,
-    });
-
-    return new NextResponse(new Uint8Array(pdfBuffer), {
-      status: 200,
+    const output = await createPosterPdf(body.svgContent, { widthMm, heightMm, dpi, bleedMm, cropMarks: body.cropMarks !== false, safeMarginMm });
+    const filename = safeFilename(body.filename);
+    return new NextResponse(new Uint8Array(output), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}.pdf"`,
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Cache-Control': 'no-store',
+        'X-ISC-PDF-Master': `raster-${dpi}dpi-vector-marks`,
       },
     });
   } catch (error) {
     console.error('PDF export error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate PDF', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to generate PDF' }, { status: 500 });
   }
 }
 
-interface PdfOptions {
-  widthIn: number;
-  heightIn: number;
-  bleed: boolean;
-  cropMarks: boolean;
-}
+async function createPosterPdf(svgContent: string, options: PdfOptions): Promise<Uint8Array> {
+  const bleedPt = mmToPoints(options.bleedMm);
+  const trimWidthPt = mmToPoints(options.widthMm);
+  const trimHeightPt = mmToPoints(options.heightMm);
+  const bleedWidthPt = trimWidthPt + bleedPt * 2;
+  const bleedHeightPt = trimHeightPt + bleedPt * 2;
+  const markMarginPt = options.cropMarks ? CROP_MARK_MARGIN_PT : 0;
+  const pageWidthPt = bleedWidthPt + markMarginPt * 2;
+  const pageHeightPt = bleedHeightPt + markMarginPt * 2;
+  const pixelWidth = Math.round((options.widthMm + options.bleedMm * 2) / MM_PER_INCH * options.dpi);
+  const pixelHeight = Math.round((options.heightMm + options.bleedMm * 2) / MM_PER_INCH * options.dpi);
+  if (pixelWidth > MAX_RASTER_DIMENSION || pixelHeight > MAX_RASTER_DIMENSION || pixelWidth * pixelHeight > MAX_RASTER_PIXELS) throw new Error(`Requested PDF master is ${pixelWidth} × ${pixelHeight}px and exceeds the safe canvas limit.`);
 
-async function createPosterPDF(svgContent: string, options: PdfOptions): Promise<Buffer> {
-  const { widthIn, heightIn, bleed, cropMarks } = options;
+  const png = await sharp(Buffer.from(svgContent), { density: options.dpi, limitInputPixels: MAX_RASTER_PIXELS, sequentialRead: true }).resize(pixelWidth, pixelHeight, { fit: 'cover', position: 'centre' }).png({ compressionLevel: 9 }).toBuffer();
+  const document = await PDFDocument.create();
+  const page = document.addPage([pageWidthPt, pageHeightPt]);
+  page.drawRectangle({ x: 0, y: 0, width: pageWidthPt, height: pageHeightPt, color: rgb(1, 1, 1) });
+  const image = await document.embedPng(png);
+  page.drawImage(image, { x: markMarginPt, y: markMarginPt, width: bleedWidthPt, height: bleedHeightPt });
 
-  const bleedPt = bleed ? (BLEED_MM / MM_PER_INCH) * 72 : 0;
-  const markMarginPt = cropMarks ? CROP_MARK_MARGIN_PT : 0;
+  const trimX0 = markMarginPt + bleedPt;
+  const trimY0 = markMarginPt + bleedPt;
+  const trimX1 = trimX0 + trimWidthPt;
+  const trimY1 = trimY0 + trimHeightPt;
+  page.node.set(PDFName.of('TrimBox'), document.context.obj([trimX0, trimY0, trimX1, trimY1]));
+  page.node.set(PDFName.of('BleedBox'), document.context.obj([markMarginPt, markMarginPt, markMarginPt + bleedWidthPt, markMarginPt + bleedHeightPt]));
+  const safePt = Math.min(mmToPoints(options.safeMarginMm), trimWidthPt / 2, trimHeightPt / 2);
+  page.node.set(PDFName.of('ArtBox'), document.context.obj([trimX0 + safePt, trimY0 + safePt, trimX1 - safePt, trimY1 - safePt]));
 
-  const trimWidthPt = widthIn * 72;
-  const trimHeightPt = heightIn * 72;
-  const bleedBoxWidthPt = trimWidthPt + bleedPt * 2;
-  const bleedBoxHeightPt = trimHeightPt + bleedPt * 2;
-  const pageWidthPt = bleedBoxWidthPt + markMarginPt * 2;
-  const pageHeightPt = bleedBoxHeightPt + markMarginPt * 2;
-
-  // Rasterize the poster to fully cover the bleed box — bleed means the
-  // artwork extends past the trim line so no white edge appears once cut.
-  const bleedBoxWidthPx = Math.round((bleedBoxWidthPt / 72) * RASTER_DPI);
-  const bleedBoxHeightPx = Math.round((bleedBoxHeightPt / 72) * RASTER_DPI);
-
-  // The poster SVG is authored at 800x1100 user units (librsvg treats those
-  // as 96dpi pixels absent physical units). Pick the rasterization density
-  // so librsvg's own render pass already lands near the target pixel size —
-  // otherwise it renders small once and .resize() has to upscale that raster
-  // ~3-4x to fill a large paper size, which is both slow (was ~100s for a
-  // 30x40in bleed box) and blurs anything raster (e.g. AI artwork) baked in.
-  const svgUnitWidth = 800;
-  const targetDensity = Math.max(72, Math.round((bleedBoxWidthPx / svgUnitWidth) * 96));
-
-  const pngBuffer = await sharp(Buffer.from(svgContent), { density: targetDensity })
-    .resize(bleedBoxWidthPx, bleedBoxHeightPx, {
-      fit: 'cover',
-      position: 'centre',
-    })
-    .png()
-    .toBuffer();
-
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([pageWidthPt, pageHeightPt]);
-
-  // Sheet background (visible only in the crop-mark margin, like real stock).
-  page.drawRectangle({
-    x: 0,
-    y: 0,
-    width: pageWidthPt,
-    height: pageHeightPt,
-    color: rgb(1, 1, 1),
-  });
-
-  const pngImage = await pdfDoc.embedPng(pngBuffer);
-  const bleedBoxX = markMarginPt;
-  const bleedBoxY = markMarginPt;
-  page.drawImage(pngImage, {
-    x: bleedBoxX,
-    y: bleedBoxY,
-    width: bleedBoxWidthPt,
-    height: bleedBoxHeightPt,
-  });
-
-  if (cropMarks) {
-    const trimX0 = bleedBoxX + bleedPt;
-    const trimY0 = bleedBoxY + bleedPt;
-    const trimX1 = trimX0 + trimWidthPt;
-    const trimY1 = trimY0 + trimHeightPt;
-    const color = rgb(0, 0, 0);
-
-    const corners: { x: number; y: number; dirX: number; dirY: number }[] = [
-      { x: trimX0, y: trimY0, dirX: -1, dirY: -1 },
-      { x: trimX1, y: trimY0, dirX: 1, dirY: -1 },
-      { x: trimX0, y: trimY1, dirX: -1, dirY: 1 },
-      { x: trimX1, y: trimY1, dirX: 1, dirY: 1 },
-    ];
-
-    for (const { x, y, dirX, dirY } of corners) {
-      page.drawLine({
-        start: { x: x + dirX * CROP_MARK_GAP_PT, y },
-        end: { x: x + dirX * (CROP_MARK_GAP_PT + CROP_MARK_LEN_PT), y },
-        thickness: 0.75,
-        color,
-      });
-      page.drawLine({
-        start: { x, y: y + dirY * CROP_MARK_GAP_PT },
-        end: { x, y: y + dirY * (CROP_MARK_GAP_PT + CROP_MARK_LEN_PT) },
-        thickness: 0.75,
-        color,
-      });
-    }
+  if (options.cropMarks) {
+    const corners = [{ x: trimX0, y: trimY0, dx: -1, dy: -1 }, { x: trimX1, y: trimY0, dx: 1, dy: -1 }, { x: trimX0, y: trimY1, dx: -1, dy: 1 }, { x: trimX1, y: trimY1, dx: 1, dy: 1 }];
+    corners.forEach(({ x, y, dx, dy }) => {
+      page.drawLine({ start: { x: x + dx * CROP_MARK_GAP_PT, y }, end: { x: x + dx * (CROP_MARK_GAP_PT + CROP_MARK_LENGTH_PT), y }, thickness: .75, color: rgb(0, 0, 0) });
+      page.drawLine({ start: { x, y: y + dy * CROP_MARK_GAP_PT }, end: { x, y: y + dy * (CROP_MARK_GAP_PT + CROP_MARK_LENGTH_PT) }, thickness: .75, color: rgb(0, 0, 0) });
+    });
   }
-
-  const pdfBytes = await pdfDoc.save();
-  return Buffer.from(pdfBytes);
+  return document.save();
 }
