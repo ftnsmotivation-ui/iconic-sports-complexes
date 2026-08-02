@@ -42,6 +42,15 @@ export const defaultExportSettings: ExportSettings = {
   colour: { mode: 'rgb', profile: 'srgb' },
 };
 
+export const MAX_RASTER_PIXELS = 600_000_000;
+export const MAX_RASTER_DIMENSION = 30_000;
+
+export function rasterPixelDimensions(settings: Pick<ExportSettings, 'dimensionsMm' | 'dpi'>): { width: number; height: number; pixels: number } {
+  const width = Math.round(settings.dimensionsMm.width / 25.4 * settings.dpi);
+  const height = Math.round(settings.dimensionsMm.height / 25.4 * settings.dpi);
+  return { width, height, pixels: width * height };
+}
+
 export function selectExportSize(settings: ExportSettings, sizeId: ExportSizeId): ExportSettings {
   return {
     ...settings,

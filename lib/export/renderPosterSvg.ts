@@ -60,7 +60,7 @@ export async function renderPosterSvg(model: PosterModel, settings: ExportSettin
   const history = model.content.historicMoments ? model.history.slice(0, 2) : [];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${settings.dimensionsMm.width}mm" height="${settings.dimensionsMm.height}mm" viewBox="0 0 800 1100" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="poster-title poster-description">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${settings.dimensionsMm.width}mm" height="${settings.dimensionsMm.height}mm" viewBox="0 0 800 1100" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="poster-title poster-description">
   <title id="poster-title">${xml(model.identity.venueName)} collector poster</title>
   <desc id="poster-description">Vector artwork prepared by ISC Studio in ${xml(model.styleId)} style.</desc>
   <metadata>format=svg; dpi=${settings.dpi}; colour=rgb/srgb; trim=${settings.dimensionsMm.width}x${settings.dimensionsMm.height}mm</metadata>
