@@ -17,15 +17,23 @@ function titleLines(title: string): [string, string?] {
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
-  const { identity, facts, collector, narrative, artwork } = model;
+  const { identity, facts, collector, narrative, artwork, direction } = model;
   const { venueName, city, country, competition } = identity;
   const style = resolvePosterStyle(model.styleId);
+  const accent = direction.colourPalette[1] ?? style.accent;
+  const background = model.styleId === 'collector' ? direction.colourPalette[0] ?? style.background : style.background;
+  const foreground = model.styleId === 'collector' ? direction.colourPalette[2] ?? style.foreground : style.foreground;
+  const densityFactLimits = { minimal: 2, balanced: 3, rich: 4 } as const;
+  const factLimit = Math.min(style.factLimit, densityFactLimits[direction.informationDensity]);
   const [lineOne, lineTwo] = titleLines(venueName);
 
   return (
     <div
       data-poster-root="true"
+      data-venue-mood={direction.moods.join(',')}
+      data-illustration-priority={direction.illustrationPriority}
       aria-label={`${venueName} collector poster`}
+      title={direction.atmosphere}
       style={{
         width: '100%',
         maxWidth: 800,
@@ -33,8 +41,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         margin: '0 auto',
         position: 'relative',
         overflow: 'hidden',
-        background: style.background,
-        color: style.foreground,
+        background,
+        color: foreground,
         boxShadow: '0 28px 80px rgba(0,0,0,.52)',
         fontFamily: style.bodyFont,
       }}
@@ -50,7 +58,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           width: '100%',
           height: style.heroHeight,
           objectFit: 'cover',
-          objectPosition: 'center 46%',
+          objectPosition: direction.heroObjectPosition,
           display: 'block',
           transform: 'scale(1.035)',
         }}
@@ -85,7 +93,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       )}
 
       {/* Collector borders */}
-      <div style={{ position: 'absolute', inset: style.borderInsets[0], border: `1.5px solid ${style.border}` }} />
+      <div style={{ position: 'absolute', inset: style.borderInsets[0], border: `1.5px solid ${accent}` }} />
       {style.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: style.borderInsets[1], border: `1px solid ${style.borderSecondary}` }} />}
 
       {/* Masthead */}
@@ -98,13 +106,13 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          color: style.accent,
+          color: accent,
           fontSize: 10,
           letterSpacing: '3.5px',
           textTransform: 'uppercase',
         }}
       >
-        <span>Iconic Sports Complexes · Archive Series</span>
+        <span>{direction.moods[0] ?? 'Iconic'} · {style.name} Series</span>
         <span style={{ letterSpacing: '1.8px' }}>No. {collector.number} / 500</span>
       </div>
 
@@ -120,7 +128,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       >
         <div
           style={{
-            color: style.accent,
+            color: accent,
             fontSize: 12,
             letterSpacing: '4.2px',
             textTransform: 'uppercase',
@@ -132,7 +140,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
 
         <div
           style={{
-            fontFamily: style.titleFont,
+            fontFamily: direction.titleFont,
             fontWeight: 700,
             fontSize: (lineOne.length > 13 ? 58 : 72) * style.titleScale,
             lineHeight: 0.91,
@@ -147,7 +155,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             marginTop: 19,
-            color: style.accent,
+            color: accent,
             fontSize: 13,
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -172,7 +180,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             height: 2,
-            background: `linear-gradient(90deg,transparent,${style.accent},transparent)`,
+            background: `linear-gradient(90deg,transparent,${accent},transparent)`,
           }}
         />
 
@@ -199,11 +207,11 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             </div>
             <div
               style={{
-                fontFamily: style.titleFont,
+                fontFamily: direction.titleFont,
                 fontSize: 21,
                 lineHeight: 1.32,
                 fontStyle: 'italic',
-                color: style.foreground,
+                color: foreground,
               }}
             >
               “{collector.inscription}”
@@ -226,7 +234,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: `repeat(${style.factLimit}, 1fr)`,
+            gridTemplateColumns: `repeat(${factLimit}, 1fr)`,
             borderTop: `1px solid ${style.borderSecondary}`,
             borderBottom: `1px solid ${style.borderSecondary}`,
           }}
@@ -236,7 +244,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             ['Capacity', facts.capacity],
             ['Surface', facts.surface],
             ['Architect', facts.architect],
-          ].slice(0, style.factLimit).map(([label, value], index) => (
+          ].slice(0, factLimit).map(([label, value], index) => (
             <div
               key={label}
               style={{
@@ -257,8 +265,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               </div>
               <div
                 style={{
-                  color: style.foreground,
-                  fontFamily: style.titleFont,
+                  color: foreground,
+                  fontFamily: direction.titleFont,
                   fontSize: value.length > 18 ? 14 : 20,
                   lineHeight: 1.12,
                 }}
@@ -287,7 +295,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
                 textTransform: 'uppercase',
               }}
             >
-              Heritage · Architecture · Sporting Memory
+              {direction.moods.slice(0, 3).join(' · ')}
             </div>
             <div
               style={{
@@ -298,7 +306,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
                 textTransform: 'uppercase',
               }}
             >
-              Museum-quality venue portrait
+              {direction.illustrationPriority} study · Museum-quality venue portrait
             </div>
           </div>
 

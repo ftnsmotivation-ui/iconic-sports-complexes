@@ -1,3 +1,4 @@
+import { resolvePosterDirection, type PosterDirection } from "./PosterDirection";
 import type { PosterStyleId } from "./PosterStyleProfiles";
 
 export interface PosterModelSource {
@@ -41,6 +42,7 @@ export interface PosterModel {
   artwork: {
     heroImageHref: string;
   };
+  direction: PosterDirection;
   styleId: PosterStyleId;
 }
 
@@ -74,6 +76,7 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
     artwork: {
       heroImageHref: source.heroImageHref || "/venue-assets/eden-gardens/hero-night.svg",
     },
+    direction: resolvePosterDirection(source.venueName),
     styleId,
   };
 }
