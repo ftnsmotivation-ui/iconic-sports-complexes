@@ -8,7 +8,6 @@ export interface PosterDirection {
   titleFont: string;
   informationDensity: PosterInformationDensity;
   illustrationPriority: string;
-  heroObjectPosition: string;
   heroFocus: string;
   atmosphere: string;
   preferredLayouts: readonly string[];
@@ -26,14 +25,6 @@ const densityMap = {
   Rich: "rich",
 } as const satisfies Record<string, PosterInformationDensity>;
 
-const heroPositions: Record<string, string> = {
-  Venue: "center 46%",
-  Track: "center 40%",
-  Architecture: "center 46%",
-  Crowd: "center 58%",
-  Landscape: "center 36%",
-};
-
 export function resolvePosterDirection(venueName: string): PosterDirection {
   const dna = resolveVenueDNA(venueName);
 
@@ -43,7 +34,6 @@ export function resolvePosterDirection(venueName: string): PosterDirection {
     titleFont: typographyFonts[dna.typography],
     informationDensity: densityMap[dna.informationDensity],
     illustrationPriority: dna.illustrationPriority,
-    heroObjectPosition: heroPositions[dna.illustrationPriority] ?? "center 46%",
     heroFocus: dna.heroFocus,
     atmosphere: dna.atmosphere,
     preferredLayouts: dna.preferredLayouts,

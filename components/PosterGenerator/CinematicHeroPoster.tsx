@@ -13,7 +13,7 @@ export interface CinematicHeroPosterProps {
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
-  const { identity, facts, collector, narrative, artwork, direction } = model;
+  const { identity, facts, collector, narrative, illustration, direction } = model;
   const { venueName, city, country, competition } = identity;
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
@@ -27,6 +27,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       data-poster-root="true"
       data-venue-mood={direction.moods.join(',')}
       data-illustration-priority={direction.illustrationPriority}
+      data-illustration-strategy={illustration.strategy}
       data-poster-layout={layout.id}
       aria-label={`${venueName} collector poster`}
       title={direction.atmosphere}
@@ -45,7 +46,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
     >
       {/* Hero artwork */}
       <img
-        src={artwork.heroImageHref}
+        src={illustration.assetHref}
         alt=""
         draggable={false}
         style={{
@@ -54,9 +55,9 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           width: '100%',
           height: layout.heroHeight,
           objectFit: 'cover',
-          objectPosition: direction.heroObjectPosition,
+          objectPosition: illustration.objectPosition,
           display: 'block',
-          transform: 'scale(1.035)',
+          transform: `scale(${illustration.scale})`,
         }}
       />
 

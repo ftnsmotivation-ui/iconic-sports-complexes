@@ -1,4 +1,5 @@
 import { resolvePosterDirection, type PosterDirection } from "./PosterDirection";
+import { resolvePosterIllustration, type PosterIllustrationPlan } from "./PosterIllustrationDirector";
 import type { PosterStyleId } from "./PosterStyleProfiles";
 
 export interface PosterModelSource {
@@ -41,9 +42,7 @@ export interface PosterModel {
   narrative: {
     secondaryStory: string;
   };
-  artwork: {
-    heroImageHref: string;
-  };
+  illustration: PosterIllustrationPlan;
   direction: PosterDirection;
   styleId: PosterStyleId;
 }
@@ -55,10 +54,13 @@ function normalizeCapacity(value: number | string): string {
 }
 
 export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector"): PosterModel {
+  const sport = source.sport || "Sporting Venue";
+  const direction = resolvePosterDirection(source.venueName);
+
   return {
     identity: {
       venueName: source.venueName,
-      sport: source.sport || "Sporting Venue",
+      sport,
       city: source.city,
       country: source.country,
       competition: source.competition || "ICONIC SPORTING VENUE",
@@ -76,10 +78,13 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
     narrative: {
       secondaryStory: source.iconicMoments || source.famousFor || source.nickname || "A stage where generations gathered, records fell and sporting memory became civic history.",
     },
-    artwork: {
-      heroImageHref: source.heroImageHref || "/venue-assets/eden-gardens/hero-night.svg",
-    },
-    direction: resolvePosterDirection(source.venueName),
+    illustration: resolvePosterIllustration({
+      venueName: source.venueName,
+      sport,
+      illustrationPriority: direction.illustrationPriority,
+      requestedAssetHref: source.heroImageHref,
+    }),
+    direction,
     styleId,
   };
 }
