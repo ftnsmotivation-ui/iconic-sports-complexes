@@ -5,16 +5,10 @@ import React from 'react';
 import type { PosterModel } from './PosterModel';
 import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
+import { resolvePosterTypography } from './PosterTypographyDirector';
 
 export interface CinematicHeroPosterProps {
   model: PosterModel;
-}
-
-function titleLines(title: string): [string, string?] {
-  const words = title.trim().toUpperCase().split(/\s+/);
-  if (words.length <= 2) return [words[0] || 'ICONIC', words[1]];
-  const split = Math.ceil(words.length / 2);
-  return [words.slice(0, split).join(' '), words.slice(split).join(' ')];
 }
 
 export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
@@ -22,12 +16,12 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
   const { venueName, city, country, competition } = identity;
   const style = resolvePosterStyle(model.styleId);
   const layout = resolvePosterLayout(model.styleId, direction);
+  const typography = resolvePosterTypography(model, layout, style);
   const accent = direction.colourPalette[1] ?? style.accent;
   const background = model.styleId === 'collector' ? direction.colourPalette[0] ?? style.background : style.background;
   const foreground = model.styleId === 'collector' ? direction.colourPalette[2] ?? style.foreground : style.foreground;
   const densityFactLimits = { minimal: 2, balanced: 3, rich: 4 } as const;
   const factLimit = Math.min(style.factLimit, densityFactLimits[direction.informationDensity]);
-  const [lineOne, lineTwo] = titleLines(venueName);
 
   return (
     <div
@@ -110,13 +104,11 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           justifyContent: 'space-between',
           alignItems: 'center',
           color: accent,
-          fontSize: 10,
-          letterSpacing: '3.5px',
-          textTransform: 'uppercase',
+          ...typography.masthead,
         }}
       >
         <span>{direction.moods[0] ?? 'Iconic'} · {style.name} Series</span>
-        <span style={{ letterSpacing: '1.8px' }}>No. {collector.number} / 500</span>
+        <span style={typography.collector}>No. {collector.number} / 500</span>
       </div>
 
       {/* Hero title */}
@@ -125,17 +117,15 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           position: 'absolute',
           left: layout.contentInset,
           right: layout.contentInset,
-          top: lineTwo ? layout.titleTop[0] : layout.titleTop[1],
+          top: typography.titleTop,
           textShadow: style.id === 'editorial' ? '0 2px 12px rgba(238,233,221,.8)' : '0 7px 24px rgba(0,0,0,.9)',
         }}
       >
         <div
           style={{
             color: accent,
-            fontSize: 12,
-            letterSpacing: '4.2px',
-            textTransform: 'uppercase',
             marginBottom: 15,
+            ...typography.subtitle,
           }}
         >
           {competition}
@@ -143,25 +133,17 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
 
         <div
           style={{
-            fontFamily: direction.titleFont,
-            fontWeight: 700,
-            fontSize: (lineOne.length > 13 ? 58 : 72) * layout.titleScale,
-            lineHeight: 0.91,
-            letterSpacing: '-1.6px',
-            textTransform: 'uppercase',
+            ...typography.title,
           }}
         >
-          <div>{lineOne}</div>
-          {lineTwo && <div>{lineTwo}</div>}
+          {typography.titleLines.map((line) => <div key={line}>{line}</div>)}
         </div>
 
         <div
           style={{
             marginTop: 19,
             color: accent,
-            fontSize: 13,
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
+            ...typography.metadata,
           }}
         >
           {city} · {country}
@@ -200,21 +182,17 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             <div
               style={{
                 color: style.accentMuted,
-                fontSize: 10,
-                letterSpacing: '3px',
-                textTransform: 'uppercase',
                 marginBottom: 12,
+                ...typography.sectionLabel,
               }}
             >
               The Venue
             </div>
             <div
               style={{
-                fontFamily: direction.titleFont,
-                fontSize: 21,
-                lineHeight: 1.32,
                 fontStyle: 'italic',
                 color: foreground,
+                ...typography.quote,
               }}
             >
               “{collector.inscription}”
@@ -226,8 +204,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               borderLeft: `1px solid ${style.borderSecondary}`,
               paddingLeft: 25,
               color: style.muted,
-              fontSize: 11,
-              lineHeight: 1.55,
+              ...typography.body,
             }}
           >
             {narrative.secondaryStory}
@@ -258,10 +235,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               <div
                 style={{
                   color: style.accentMuted,
-                  fontSize: 8.5,
-                  letterSpacing: '2.2px',
-                  textTransform: 'uppercase',
                   marginBottom: 9,
+                  ...typography.factLabel,
                 }}
               >
                 {label}
@@ -269,9 +244,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
               <div
                 style={{
                   color: foreground,
-                  fontFamily: direction.titleFont,
-                  fontSize: value.length > 18 ? 14 : 20,
-                  lineHeight: 1.12,
+                  ...typography.factValue,
+                  fontSize: value.length > 18 ? 14 : typography.factValue.fontSize,
                 }}
               >
                 {value}
@@ -293,9 +267,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             <div
               style={{
                 color: style.accentMuted,
-                fontSize: 8.5,
-                letterSpacing: '2.7px',
-                textTransform: 'uppercase',
+                ...typography.caption,
               }}
             >
               {direction.moods.slice(0, 3).join(' · ')}
@@ -303,10 +275,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             <div
               style={{
                 color: style.subtle,
-                fontSize: 8,
-                letterSpacing: '1.6px',
                 marginTop: 7,
-                textTransform: 'uppercase',
+                ...typography.micro,
               }}
             >
               {direction.illustrationPriority} study · Museum-quality venue portrait
@@ -317,9 +287,8 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
             style={{
               textAlign: 'right',
               color: style.accentMuted,
-              fontSize: 8,
+              ...typography.micro,
               letterSpacing: '2.3px',
-              textTransform: 'uppercase',
             }}
           >
             {style.editionLabel}
