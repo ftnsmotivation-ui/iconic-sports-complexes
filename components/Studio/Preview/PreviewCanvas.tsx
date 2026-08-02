@@ -7,6 +7,7 @@ import type { PosterConceptId } from "@/components/PosterGenerator/PosterConcept
 import type { StudioStyle } from "../Sidebar/StylePanel";
 import PreviewToolbar, { type PreviewZoom } from "./PreviewToolbar";
 import ConceptSelector from "./ConceptSelector";
+import { FramePreview, FrameSelector, type PreviewFrameId } from "./FramePreview";
 
 interface PreviewCanvasProps {
   posterModel: PosterModel | null;
@@ -14,9 +15,11 @@ interface PreviewCanvasProps {
   loading: boolean;
   selectedConcept: PosterConceptId;
   onConceptChange: (concept: PosterConceptId) => void;
+  selectedFrame: PreviewFrameId;
+  onFrameChange: (frame: PreviewFrameId) => void;
 }
 
-export default function PreviewCanvas({ posterModel, selectedStyle, loading, selectedConcept, onConceptChange }: PreviewCanvasProps) {
+export default function PreviewCanvas({ posterModel, selectedStyle, loading, selectedConcept, onConceptChange, selectedFrame, onFrameChange }: PreviewCanvasProps) {
   const [zoom, setZoom] = useState<PreviewZoom>("fit");
   const [showGrid, setShowGrid] = useState(false);
   const [showSafeMargin, setShowSafeMargin] = useState(false);
@@ -40,26 +43,31 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading, sel
         onGuidesToggle={() => setShowGuides((current) => !current)}
       />
       <ConceptSelector posterModel={posterModel} selectedConcept={selectedConcept} onConceptChange={onConceptChange}/>
+      <FrameSelector selectedFrame={selectedFrame} onFrameChange={onFrameChange}/>
       <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
         <div
           className="relative shrink-0"
           style={{ width: canvasWidth, maxWidth: zoom === "fit" ? 610 : "none" }}
         >
-          {posterModel ? (
-            <CinematicHeroPoster model={posterModel} />
-          ) : (
-            <div className="flex aspect-[8/11] w-full items-center justify-center border border-white/10 bg-[#0b0e11] text-sm text-white/35">
-              {loading ? "Preparing poster…" : "Select an available venue"}
+          <FramePreview frame={selectedFrame}>
+            <div className="relative">
+              {posterModel ? (
+                <CinematicHeroPoster model={posterModel} />
+              ) : (
+                <div className="flex aspect-[8/11] w-full items-center justify-center border border-white/10 bg-[#0b0e11] text-sm text-white/35">
+                  {loading ? "Preparing poster…" : "Select an available venue"}
+                </div>
+              )}
+              {posterModel && (
+                <PreviewOverlays grid={showGrid} safeMargin={showSafeMargin} guides={showGuides} />
+              )}
             </div>
-          )}
-          {posterModel && (
-            <PreviewOverlays grid={showGrid} safeMargin={showSafeMargin} guides={showGuides} />
-          )}
+          </FramePreview>
         </div>
       </div>
       <div className="flex h-10 items-center justify-between border-t border-white/10 bg-[#0d1014] px-5 text-[10px] text-white/35">
         <span>1000 × 1600 master artwork</span>
-        <span>RGB preview · Vector master · {zoom === "fit" ? "Fit" : `${zoom * 100}%`}</span>
+        <span>RGB preview · Vector master · {selectedFrame === 'none' ? 'No frame' : `${selectedFrame} frame`} · {zoom === "fit" ? "Fit" : `${zoom * 100}%`}</span>
       </div>
     </section>
   );

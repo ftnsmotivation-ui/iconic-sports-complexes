@@ -9,6 +9,7 @@ import { emptyPosterPersonalisation, type PosterPersonalisationInput } from "@/c
 import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
 import type { StudioParameter } from "@/components/Studio/Sidebar/ParameterPanel";
 import PreviewCanvas from "@/components/Studio/Preview/PreviewCanvas";
+import type { PreviewFrameId } from "@/components/Studio/Preview/FramePreview";
 import StylePanel, { type StudioStyle } from "@/components/Studio/Sidebar/StylePanel";
 import VenuePanel, { type StudioVenue } from "@/components/Studio/Sidebar/VenuePanel";
 import StudioHeader from "@/components/Studio/StudioHeader";
@@ -35,6 +36,7 @@ export default function StudioPreviewPage() {
   const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(["venueFacts", "venueMap", "collectorNumber"]);
   const [personalisation, setPersonalisation] = useState<PosterPersonalisationInput>(emptyPosterPersonalisation);
   const [selectedConcept, setSelectedConcept] = useState<PosterConceptId>('monument');
+  const [selectedFrame, setSelectedFrame] = useState<PreviewFrameId>('none');
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
 
@@ -97,7 +99,7 @@ export default function StudioPreviewPage() {
           <StylePanel selectedStyle={selectedStyle} posterModel={posterModel} onStyleChange={setSelectedStyle} />
         </>
       )}
-      preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} />}
+      preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
       inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} />}
     />
   );
