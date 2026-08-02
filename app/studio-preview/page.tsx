@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
 import type { PosterConceptId } from "@/components/PosterGenerator/PosterConceptDirector";
 import type { PosterContentId } from "@/components/PosterGenerator/PosterContent";
 import { emptyPosterPersonalisation, type PosterPersonalisationInput } from "@/components/PosterGenerator/PosterPersonalisation";
-import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
 import type { StudioParameter } from "@/components/Studio/Sidebar/ParameterPanel";
-import PreviewCanvas from "@/components/Studio/Preview/PreviewCanvas";
 import type { PreviewFrameId } from "@/components/Studio/Preview/FramePreview";
-import StylePanel, { type StudioStyle } from "@/components/Studio/Sidebar/StylePanel";
+import type { StudioStyle } from "@/components/Studio/Sidebar/StylePanel";
 import VenuePanel, { type StudioVenue } from "@/components/Studio/Sidebar/VenuePanel";
 import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
@@ -18,11 +17,13 @@ import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components
 import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportSettings";
 import type { SportEnrichmentInput, SportEnrichmentResult } from "@/lib/database/SportEnrichmentTypes";
 import { downloadArtifact } from "@/lib/export/downloadArtifact";
-import { createStudioExportService } from "@/lib/export/createStudioExportService";
-import { createPrintPackage } from "@/lib/export/PrintPackageService";
-import { createEtsyPackage } from "@/lib/export/EtsyPackageService";
-import { createSocialPackage } from "@/lib/export/SocialPackageService";
-import { createMarketingMockups } from "@/lib/export/MarketingMockupService";
+
+const StylePanel = dynamic(() => import('@/components/Studio/Sidebar/StylePanel'), { ssr: false });
+const PreviewCanvas = dynamic(() => import('@/components/Studio/Preview/PreviewCanvas'), {
+  ssr: false,
+  loading: () => <div className="flex min-h-[620px] items-center justify-center bg-[#11151a] text-sm text-white/50" role="status">Loading vector preview…</div>,
+});
+const VenueInspector = dynamic(() => import('@/components/Studio/Inspector/VenueInspector'), { ssr: false });
 
 const initialSports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -179,13 +180,14 @@ export default function StudioPreviewPage() {
       return error instanceof Error ? error.message : 'Unable to add sport.';
     }
   };
-  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation, selectedConcept) : null;
+  const posterModel = useMemo(() => selectedVenue ? buildPosterModel(selectedVenue, selectedStyle, selectedParameters, personalisation, selectedConcept) : null, [personalisation, selectedConcept, selectedParameters, selectedStyle, selectedVenue]);
   const exportPoster = async () => {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('');
     setExportFailed(false);
     try {
+      const { createStudioExportService } = await import('@/lib/export/createStudioExportService');
       const service = createStudioExportService();
       const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
       downloadArtifact(artifact);
@@ -203,6 +205,7 @@ export default function StudioPreviewPage() {
     setExportMessage('Starting print package…');
     setExportFailed(false);
     try {
+      const [{ createPrintPackage }, { createStudioExportService }] = await Promise.all([import('@/lib/export/PrintPackageService'), import('@/lib/export/createStudioExportService')]);
       const artifact = await createPrintPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
@@ -219,6 +222,7 @@ export default function StudioPreviewPage() {
     setExportMessage('Starting Etsy package…');
     setExportFailed(false);
     try {
+      const [{ createEtsyPackage }, { createStudioExportService }] = await Promise.all([import('@/lib/export/EtsyPackageService'), import('@/lib/export/createStudioExportService')]);
       const artifact = await createEtsyPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
@@ -235,6 +239,7 @@ export default function StudioPreviewPage() {
     setExportMessage('Starting social and web package…');
     setExportFailed(false);
     try {
+      const { createSocialPackage } = await import('@/lib/export/SocialPackageService');
       const artifact = await createSocialPackage(posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
@@ -251,6 +256,7 @@ export default function StudioPreviewPage() {
     setExportMessage('Starting marketing mockups…');
     setExportFailed(false);
     try {
+      const { createMarketingMockups } = await import('@/lib/export/MarketingMockupService');
       const artifact = await createMarketingMockups(posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
