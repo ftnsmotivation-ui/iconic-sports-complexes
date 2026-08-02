@@ -19,6 +19,8 @@ const MONACO_MASTER = "/venue-assets/circuit-de-monaco/hero-night.svg";
 const BERNABEU_MASTER = "/venue-assets/santiago-bernabeu/hero-night.svg";
 const ST_ANDREWS_MASTER = "/venue-assets/st-andrews/hero-links.svg";
 const MADISON_SQUARE_GARDEN_MASTER = "/venue-assets/madison-square-garden/hero-night.svg";
+const WIMBLEDON_MASTER = "/venue-assets/wimbledon-centre-court/hero-summer.svg";
+const AUGUSTA_MASTER = "/venue-assets/augusta-national/hero-azaleas.svg";
 
 const venueMasters: Readonly<Record<string, string>> = {
   "eden gardens": EDEN_GARDENS_MASTER,
@@ -28,6 +30,9 @@ const venueMasters: Readonly<Record<string, string>> = {
   "santiago bernabeu": BERNABEU_MASTER,
   "old course at st andrews": ST_ANDREWS_MASTER,
   "madison square garden": MADISON_SQUARE_GARDEN_MASTER,
+  "all england lawn tennis club": WIMBLEDON_MASTER,
+  "wimbledon centre court": WIMBLEDON_MASTER,
+  "augusta national golf club": AUGUSTA_MASTER,
 };
 
 const sportFallbacks: Readonly<Record<string, string>> = {

@@ -31,6 +31,11 @@
       <stop offset="0" stop-color="#e1dbc8"/>
       <stop offset="1" stop-color="#878573"/>
     </linearGradient>
+    <linearGradient id="lightBeam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff1bd" stop-opacity=".24"/>
+      <stop offset=".52" stop-color="#d8c17c" stop-opacity=".09"/>
+      <stop offset="1" stop-color="#d8c17c" stop-opacity="0"/>
+    </linearGradient>
     <pattern id="seats" width="24" height="16" patternUnits="userSpaceOnUse">
       <rect width="24" height="16" fill="#253936"/>
       <path d="M3 12h10V5H5z" fill="#657064" opacity=".68"/>
@@ -59,6 +64,11 @@
     <ellipse cx="144" cy="266" rx="75" ry="48"/><ellipse cx="429" cy="144" rx="74" ry="48"/>
     <ellipse cx="1176" cy="149" rx="74" ry="48"/><ellipse cx="1478" cy="289" rx="75" ry="48"/>
   </g>
+  <!-- Broad light falloff turns the structure into an evening-match atmosphere. -->
+  <g fill="url(#lightBeam)" filter="url(#softGlow)">
+    <path d="M356 126h139l410 776H584z"/><path d="M1108 126h139l-228 776H699z"/>
+    <path d="M73 248h118l544 654H433z" opacity=".45"/><path d="M1415 268h118L1167 902H865z" opacity=".45"/>
+  </g>
 
   <!-- Eden Gardens' tall lattice floodlights -->
   <g stroke="#97885e" fill="none" stroke-linejoin="round">
@@ -84,29 +94,41 @@
     </g>
   </g>
 
-  <!-- Historic clubhouse and pavilion -->
+  <!-- Historic Kolkata pavilion, layered pediments and clock face -->
   <g transform="translate(565 366)">
     <path d="M0 171V57h61V19h56V0h201v21h56v38h62v114z" fill="url(#pavilion)" stroke="#534f42" stroke-width="5"/>
-    <path d="M91 1h251l-24-28H117z" fill="#b8aa78" stroke="#5f5948" stroke-width="5"/>
-    <path d="M105-27h222l-39-24H145z" fill="#d5cda8" stroke="#5f5948" stroke-width="4"/>
+    <path d="M91 1h251l-24-28H117z" fill="#9e493b" stroke="#5f5948" stroke-width="5"/>
+    <path d="M105-27h222l-39-24H145z" fill="#d7caa1" stroke="#5f5948" stroke-width="4"/>
+    <path d="M163-51h111l-55-43z" fill="#efe2bc" stroke="#5f5948" stroke-width="4"/>
+    <circle cx="219" cy="-47" r="20" fill="#f0e5c7" stroke="#5f5948" stroke-width="4"/>
+    <path d="M219-47v-12M219-47l10 7" stroke="#4b5048" stroke-width="3" stroke-linecap="round"/>
     <rect x="20" y="73" width="398" height="85" fill="url(#windows)"/>
     <path d="M0 58h436M0 108h436M60 19v152M374 21v150" stroke="#6e6c5e" stroke-width="5"/>
+    <g fill="#e5dcc0" stroke="#6e6c5e" stroke-width="3"><path d="M77 158v-45h34v45M325 158v-45h34v45"/><path d="M183 158v-58h70v58"/></g>
     <g fill="#4b5f5d"><rect x="133" y="-18" width="18" height="18"/><rect x="285" y="-18" width="18" height="18"/></g>
   </g>
 
   <!-- Deep, asymmetric stadium bowl -->
   <path d="M25 677C233 455 524 350 808 359c296 9 580 132 767 342l-91 231c-174-143-411-232-680-236-269-3-520 81-694 224z" fill="url(#concourse)" stroke="#88784a" stroke-width="6"/>
   <g clip-path="url(#standClip)">
-    <path d="M-30 687C229 468 512 397 806 405c312 8 602 116 828 341" fill="none" stroke="url(#seats)" stroke-width="116"/>
+    <path d="M-30 687C229 468 512 397 806 405c312 8 602 116 828 341" fill="none" stroke="url(#seats)" stroke-width="116" opacity=".7"/>
     <path d="M-40 763C237 572 512 508 810 514c318 7 592 95 827 299" fill="none" stroke="#152321" stroke-width="38"/>
-    <path d="M-34 805C238 626 520 572 807 579c317 8 593 90 824 282" fill="none" stroke="url(#seats)" stroke-width="108"/>
-    <g stroke="#aa9962" stroke-width="8" opacity=".76">
+    <path d="M-34 805C238 626 520 572 807 579c317 8 593 90 824 282" fill="none" stroke="url(#seats)" stroke-width="108" opacity=".64"/>
+    <path d="M-30 687C229 468 512 397 806 405c312 8 602 116 828 341" fill="none" stroke="#e4c976" stroke-width="108" opacity=".08" filter="url(#softGlow)"/>
+    <g stroke="#aa9962" stroke-width="7" opacity=".48">
       <path d="M125 585l77 250M283 487l50 285M472 414l27 301M691 374l6 306M921 380l-12 305M1146 425l-36 296M1340 515l-62 267M1495 635l-81 204"/>
     </g>
-    <g stroke="#ced4c3" stroke-width="3" opacity=".52">
+    <g stroke="#ced4c3" stroke-width="3" opacity=".3">
       <path d="M31 650C278 469 530 425 805 431c293 7 554 90 765 282" fill="none"/>
       <path d="M50 705C279 535 539 485 807 491c288 7 544 86 755 269" fill="none"/>
       <path d="M76 780C306 629 550 587 807 592c276 6 519 77 728 239" fill="none"/>
+    </g>
+    <g fill="#f0d98f" opacity=".42">
+      <circle cx="246" cy="561" r="4"/><circle cx="324" cy="530" r="3"/><circle cx="402" cy="499" r="4"/><circle cx="493" cy="474" r="3"/>
+      <circle cx="579" cy="453" r="4"/><circle cx="674" cy="439" r="3"/><circle cx="758" cy="431" r="4"/><circle cx="853" cy="434" r="3"/>
+      <circle cx="948" cy="444" r="4"/><circle cx="1041" cy="465" r="3"/><circle cx="1134" cy="493" r="4"/><circle cx="1231" cy="532" r="3"/>
+      <circle cx="346" cy="664" r="3"/><circle cx="463" cy="624" r="4"/><circle cx="574" cy="601" r="3"/><circle cx="691" cy="585" r="4"/>
+      <circle cx="813" cy="583" r="3"/><circle cx="932" cy="593" r="4"/><circle cx="1050" cy="617" r="3"/><circle cx="1166" cy="659" r="4"/>
     </g>
   </g>
   <path d="M110 920c174-143 425-227 694-224 269 4 506 93 680 236l-59 73c-181-119-390-180-623-183-236-2-453 54-638 165z" fill="#0d1817" stroke="#685d3b" stroke-width="5"/>
@@ -114,8 +136,8 @@
   <!-- The famous oval and central cricket square -->
   <ellipse cx="800" cy="897" rx="630" ry="213" fill="#07120e" opacity=".55"/>
   <ellipse cx="800" cy="874" rx="573" ry="180" fill="url(#field)" stroke="#8b985e" stroke-width="4"/>
-  <ellipse cx="800" cy="874" rx="505" ry="150" fill="none" stroke="#8dad75" stroke-width="3" opacity=".55"/>
-  <path d="M278 888c280 43 762 43 1043-1" fill="none" stroke="#6e9668" stroke-width="3" opacity=".5"/>
+  <ellipse cx="800" cy="874" rx="505" ry="150" fill="none" stroke="#8dad75" stroke-width="3" opacity=".28"/>
+  <path d="M278 888c280 43 762 43 1043-1" fill="none" stroke="#6e9668" stroke-width="3" opacity=".24"/>
   <path d="M741 725l119 3 53 284-226-2z" fill="#b8a46b" opacity=".9"/>
   <path d="M766 729l70 1 27 280-150-1z" fill="#d1bd7e" opacity=".66"/>
   <g stroke="#f0e6bd" stroke-width="4" opacity=".9"><path d="M723 947h176M737 773h139"/><path d="M779 761v28M800 761v28M821 761v28"/></g>
@@ -125,5 +147,6 @@
   <g fill="#ecd993" opacity=".7" filter="url(#lampGlow)">
     <circle cx="234" cy="615" r="5"/><circle cx="355" cy="566" r="4"/><circle cx="520" cy="522" r="5"/><circle cx="1050" cy="522" r="4"/><circle cx="1262" cy="578" r="5"/><circle cx="1390" cy="645" r="4"/>
   </g>
+  <ellipse cx="800" cy="792" rx="620" ry="128" fill="#d7bf79" opacity=".055" filter="url(#softGlow)"/>
   <rect width="1600" height="1100" fill="none" stroke="#0a0d0d" stroke-width="28" opacity=".58"/>
 </svg>

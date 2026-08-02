@@ -8,6 +8,8 @@ export interface StudioVenue {
   venueName: string;
   city: string;
   country: string;
+  lat?: number | string;
+  lng?: number | string;
   opened: number | string;
   capacity: number | string;
   surface?: string;

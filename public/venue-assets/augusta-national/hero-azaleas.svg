@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Augusta National azalea study</title>
+  <desc id="desc">Original vector portrait of Augusta's rolling fairway, white clubhouse, Georgia pines, azaleas and a stone bridge at Amen Corner.</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#78999a"/><stop offset=".55" stop-color="#c9c9a6"/><stop offset="1" stop-color="#eadab3"/></linearGradient>
+    <linearGradient id="fairway" x2="0" y2="1"><stop stop-color="#78965a"/><stop offset="1" stop-color="#244a35"/></linearGradient>
+    <linearGradient id="water" x2="1" y2="1"><stop stop-color="#294f51"/><stop offset=".5" stop-color="#6f8c7f"/><stop offset="1" stop-color="#1e3d43"/></linearGradient>
+    <symbol id="pine" viewBox="0 0 180 480"><path d="M87 480 99 110" stroke="#483c2d" stroke-width="18"/><g fill="#244b35"><path d="M94 20 15 191h158z"/><path d="M96 91 0 292h180z"/><path d="M94 186 8 390h169z"/></g></symbol>
+    <symbol id="azalea" viewBox="0 0 100 80"><g fill="#bc4967"><circle cx="20" cy="45" r="19"/><circle cx="44" cy="29" r="22"/><circle cx="68" cy="47" r="20"/><circle cx="49" cy="59" r="19"/></g><g fill="#e59bb0"><circle cx="34" cy="33" r="8"/><circle cx="58" cy="47" r="7"/></g></symbol>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#sky)"/>
+  <circle cx="1235" cy="154" r="103" fill="#f2dfab" opacity=".42"/>
+  <path d="M0 470c195-124 371-91 548-111 234-26 392-149 638-102 141 27 260 104 414 76v419H0z" fill="#557455"/>
+  <!-- Georgia pines frame the vista -->
+  <g opacity=".96"><use href="#pine" x="-30" y="80" width="270" height="720"/><use href="#pine" x="155" y="65" width="210" height="650"/><use href="#pine" x="1260" y="60" width="220" height="670"/><use href="#pine" x="1415" y="85" width="255" height="730"/></g>
+  <!-- The white clubhouse, veranda and cupola establish Augusta before the course is seen. -->
+  <g transform="translate(515 205)">
+    <path d="M0 214h570V91h-72V36h-72v55H153V57H76v34H0z" fill="#f2ecdc" stroke="#4f5548" stroke-width="7"/>
+    <path d="m-18 94 107-76 92 71 114-87 119 83 84-61 91 70" fill="#c8c1ad" stroke="#4f5548" stroke-width="7"/>
+    <path d="M263 4h72v-30h-15v-35h-42v35h-15z" fill="#eee8d7" stroke="#4f5548" stroke-width="6"/>
+    <g fill="#31463e"><rect x="45" y="121" width="34" height="47"/><rect x="128" y="121" width="34" height="47"/><rect x="219" y="121" width="34" height="47"/><rect x="315" y="121" width="34" height="47"/><rect x="408" y="121" width="34" height="47"/><rect x="493" y="121" width="34" height="47"/></g>
+    <g fill="#ffffff" stroke="#657064" stroke-width="4"><path d="M22 172h526v42H22z"/><path d="M42 172v42M102 172v42M162 172v42M222 172v42M282 172v42M342 172v42M402 172v42M462 172v42M522 172v42"/></g>
+    <path d="M-38 224h646" stroke="#d5bd79" stroke-width="11"/>
+  </g>
+  <!-- Rolling fairway and immaculate approach -->
+  <path d="M0 588c219-108 407-47 568-73 241-39 366-142 622-99 160 27 277 103 410 78v606H0z" fill="url(#fairway)"/>
+  <path d="M374 1100c47-313 196-464 432-554 165-63 240-126 388-143 106-13 198 12 274 56-221 17-327 85-449 173-151 109-180 270-188 468Z" fill="#9cae6b" opacity=".62"/>
+  <path d="M620 1100c34-250 118-375 265-470 117-75 219-143 402-165" fill="none" stroke="#c0c88d" stroke-width="76" opacity=".38"/>
+  <!-- Rae's Creek and Hogan-style stone bridge -->
+  <path d="M0 820c247-58 430-21 608 31 250 73 410 49 598-21 151-56 258-63 394-23v293H0z" fill="url(#water)"/>
+  <g transform="translate(785 797)"><path d="M-260 118c76-176 444-176 520 0" fill="none" stroke="#d9d0ad" stroke-width="58"/><path d="M-278 141h556" stroke="#746b55" stroke-width="17"/><path d="M-223 111c71-116 375-116 446 0" fill="none" stroke="#536350" stroke-width="12"/><g stroke="#a69a7b" stroke-width="4"><path d="M-205 65v70M-145 25v110M-80 0v135M0-14v149M80 0v135M145 25v110M205 65v70"/></g></g>
+  <!-- Dense azalea banks and the yellow pin create Augusta's unmistakable spring colour. -->
+  <g><use href="#azalea" x="15" y="575" width="220" height="176"/><use href="#azalea" x="175" y="620" width="185" height="148"/><use href="#azalea" x="330" y="648" width="130" height="104"/><use href="#azalea" x="1160" y="565" width="210" height="168"/><use href="#azalea" x="1325" y="595" width="210" height="168"/><use href="#azalea" x="1040" y="635" width="165" height="132"/></g>
+  <path d="M1080 535v-137" stroke="#f5f0d9" stroke-width="7"/><path d="M1087 402l96 29-96 30z" fill="#f0cf4d"/>
+  <g fill="#e4d8ae" opacity=".48"><ellipse cx="286" cy="894" rx="99" ry="24"/><ellipse cx="1312" cy="928" rx="115" ry="27"/></g>
+  <rect width="1600" height="1100" fill="none" stroke="#173225" stroke-width="28" opacity=".48"/>
+</svg>

@@ -12,9 +12,13 @@ Excel Workbook
 → Studio Application State
 → Poster Model
 → Venue DNA
-→ Layout Director
+→ Visual Story Director
+→ Variation Director
+→ Layout + Composition Directors
 → Typography Director
+→ Colour Director
 → Illustration Director
+→ Collector Details Director
 → SVG Renderer
 → Export Engine
 
@@ -80,13 +84,19 @@ Responsible for high-level artistic characteristics such as:
 
 Directors make design decisions.
 
-Examples:
+The collector design engine uses a staged decision graph:
 
-- Layout Director
-- Typography Director
-- Illustration Director
-- Future Colour Director
-- Future Export Director
+- The Visual Story Director translates Venue DNA into narrative emphasis, lighting, density, map affinity, and typographic tone.
+- The Variation Director deterministically selects one of several premium art-direction strategies from a venue and edition key.
+- The Layout Director supplies structural bounds; the Composition Director decides hero dominance, title scale and alignment, visual weight, negative space, information density, and map prominence.
+- The Typography Director derives title line breaks, scale, tracking, leading, hierarchy, and breathing room from the composition and story.
+- The Colour Director promotes the Venue DNA palette into semantic roles used by artwork treatment, type, rules, maps, borders, and paper.
+- The Collector Details Director supplies reusable edition marks, fine rules, borders, mastheads, and micro-typography.
+- The Illustration Director selects the vector artwork strategy independently of editorial layout.
+
+Both the live React preview and standalone SVG export consume these same plans. Renderers draw the resolved plans and must not contain venue-name layout or typography branches.
+
+Variation keys are deterministic. `primary`, `alternate`, and `archive` can produce distinct editions of one venue without storing hand-tuned layouts or making export output unstable.
 
 Renderers should not make editorial decisions that belong to directors.
 

@@ -21,6 +21,11 @@ export function FramePreview({ frame, children }: { frame: PreviewFrameId; child
   return <div data-preview-frame={frame} aria-label={`${frameProfiles[frame].name} frame preview`} style={frameProfiles[frame].frame}>{children}</div>;
 }
 
+export function getPreviewFrameInset(frame: PreviewFrameId): number {
+  const padding = frameProfiles[frame].frame.padding;
+  return typeof padding === 'number' ? padding : 0;
+}
+
 export function FrameSelector({ selectedFrame, onFrameChange }: { selectedFrame: PreviewFrameId; onFrameChange: (frame: PreviewFrameId) => void }) {
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto border-b border-white/10 bg-[#0d1014] px-4 py-1.5" role="group" aria-label="Frame preview">

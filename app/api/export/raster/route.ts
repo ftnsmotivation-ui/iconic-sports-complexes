@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 
 import { MAX_RASTER_DIMENSION, MAX_RASTER_PIXELS, type ExportDpi } from '@/lib/export/ExportSettings';
+import { prepareSvgForRaster } from '@/lib/export/prepareSvgForRaster';
 
 const supportedDpi: readonly ExportDpi[] = [150, 300, 600];
 
@@ -26,7 +27,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Requested raster dimensions exceed the safe canvas limit.' }, { status: 400 });
     }
 
-    const pipeline = sharp(Buffer.from(body.svgContent), { density: dpi, limitInputPixels: MAX_RASTER_PIXELS, sequentialRead: true }).resize(width, height, { fit: 'fill' });
+    const rasterSvg = prepareSvgForRaster(body.svgContent, width, height);
+    const pipeline = sharp(Buffer.from(rasterSvg), { density: 72, limitInputPixels: MAX_RASTER_PIXELS, sequentialRead: true })
+      .resize(width, height, { fit: 'fill' })
+      .withMetadata({ density: dpi });
     const output = body.format === 'png'
       ? await pipeline.png({ compressionLevel: 9 }).toBuffer()
       : body.format === 'tiff'

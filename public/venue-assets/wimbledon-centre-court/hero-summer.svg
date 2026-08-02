@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Wimbledon Centre Court summer study</title>
+  <desc id="desc">Original vector portrait of Centre Court with ivy, green seating, grass, royal-box architecture and the retractable roof.</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#9eb7b1"/><stop offset=".62" stop-color="#d8d3bd"/><stop offset="1" stop-color="#eee2c3"/></linearGradient>
+    <linearGradient id="bowl" x2="0" y2="1"><stop stop-color="#315d47"/><stop offset="1" stop-color="#102e27"/></linearGradient>
+    <linearGradient id="grass" x2="0" y2="1"><stop stop-color="#7fa45d"/><stop offset="1" stop-color="#3e653f"/></linearGradient>
+    <pattern id="seats" width="25" height="17" patternUnits="userSpaceOnUse"><circle cx="6" cy="7" r="4" fill="#78917a"/><circle cx="18" cy="7" r="4" fill="#244a3a"/></pattern>
+    <pattern id="ivy" width="30" height="25" patternUnits="userSpaceOnUse"><path d="M2 20C8 5 17 7 19 17 22 5 29 8 27 21Z" fill="#285f39"/><circle cx="13" cy="7" r="5" fill="#407b47"/></pattern>
+  </defs>
+  <rect width="1600" height="1100" fill="url(#sky)"/>
+  <circle cx="1290" cy="170" r="96" fill="#f5e5b1" opacity=".38"/>
+  <path d="M0 370c170-75 316-37 454-54 168-21 300-111 478-88 219 28 369 119 668 75v322H0z" fill="#56765b" opacity=".58"/>
+  <!-- Centre Court's roof and distinctive oval opening -->
+  <path d="M122 494C183 215 426 105 800 105s617 110 678 389l-98 45C1283 335 1087 265 800 265s-483 70-580 274Z" fill="#d8d4c7" stroke="#334841" stroke-width="10"/>
+  <g fill="none" stroke="#66736d" stroke-width="12" opacity=".82">
+    <path d="M178 445C330 221 520 168 800 168s470 53 622 277"/>
+    <path d="M250 397C396 246 564 218 800 218s404 28 550 179"/>
+    <path d="M305 336l86 144M438 255l62 185M584 190l31 218M1295 336l-86 144M1162 255l-62 185M1016 190l-31 218"/>
+  </g>
+  <ellipse cx="800" cy="480" rx="632" ry="300" fill="#102a24" stroke="#d7cfad" stroke-width="10"/>
+  <ellipse cx="800" cy="498" rx="562" ry="252" fill="url(#bowl)"/>
+  <ellipse cx="800" cy="502" rx="516" ry="218" fill="url(#seats)" opacity=".9"/>
+  <!-- Royal Box and ivy-clad court walls -->
+  <path d="M505 408h590v154H505z" fill="#d7d1bd" stroke="#323c38" stroke-width="8"/>
+  <path d="M548 439h504v103H548z" fill="#203c31"/>
+  <g fill="#d6bc73"><rect x="580" y="463" width="54" height="38"/><rect x="662" y="463" width="54" height="38"/><rect x="884" y="463" width="54" height="38"/><rect x="966" y="463" width="54" height="38"/></g>
+  <path d="M215 525h1170v176H215z" fill="url(#ivy)" stroke="#224632" stroke-width="7"/>
+  <path d="M430 554h740v132H430z" fill="#193a2d" stroke="#d8d0b1" stroke-width="7"/>
+  <rect x="665" y="566" width="270" height="89" fill="#15211d" stroke="#d2bd77" stroke-width="5"/>
+  <g fill="#e8dfc3" font-family="Arial" font-size="22" letter-spacing="5"><text x="704" y="603">GENTLEMEN</text><text x="730" y="637">LADIES</text></g>
+  <!-- Immaculate striped grass court -->
+  <path d="M238 674h1124l238 426H0z" fill="url(#grass)"/>
+  <g opacity=".17" fill="#dfe8c2"><path d="M238 674h137l-106 426H0zM512 674h137l-35 426H407zM786 674h137l35 426H751zM1060 674h137l106 426h-207z"/></g>
+  <path d="M468 731h664l114 319H354zM800 731v319M411 890h778M519 731l-57 319M1081 731l57 319" fill="none" stroke="#f2edda" stroke-width="8"/>
+  <path d="M403 880h794" stroke="#302f29" stroke-width="11"/><path d="M403 872h794" stroke="#f2edda" stroke-width="5" stroke-dasharray="12 8"/>
+  <g fill="#553477"><rect x="178" y="660" width="12" height="147"/><path d="M190 666h82v49h-82z"/><rect x="1410" y="660" width="12" height="147"/><path d="M1328 666h82v49h-82z"/></g>
+  <rect width="1600" height="1100" fill="none" stroke="#14251f" stroke-width="28" opacity=".5"/>
+</svg>

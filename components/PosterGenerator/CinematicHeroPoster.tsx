@@ -2,7 +2,10 @@
 
 import React from 'react';
 
+import { resolveCollectorDetails } from './CollectorDetailsDirector';
+import CollectorInformationZone from './CollectorInformationZone';
 import { resolvePosterColours } from './PosterColourDirector';
+import { resolvePosterComposition } from './PosterCompositionDirector';
 import { resolvePosterConcept } from './PosterConceptDirector';
 import HistoricContentModule from './HistoricContentModule';
 import PersonalisationModule from './PersonalisationModule';
@@ -23,10 +26,12 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
   const style = resolvePosterStyle(model.styleId);
   const concept = resolvePosterConcept(model.conceptId);
   const layout = resolvePosterLayout(model.styleId, direction, concept.layoutId);
-  const typography = resolvePosterTypography(model, layout, style, concept);
-  const colours = resolvePosterColours(model, style, concept);
+  const composition = resolvePosterComposition(model, layout);
+  const typography = resolvePosterTypography(model, layout, style, concept, composition);
+  const colours = resolvePosterColours(model, style, concept, composition);
+  const details = resolveCollectorDetails(model, composition);
   const densityFactLimits = { minimal: 2, balanced: 3, rich: 4 } as const;
-  const factLimit = Math.min(style.factLimit, densityFactLimits[direction.informationDensity]);
+  const factLimit = Math.min(style.factLimit, densityFactLimits[composition.informationDensity]);
 
   return (
     <div
@@ -60,12 +65,12 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
           position: 'absolute',
           inset: 0,
           width: '100%',
-          height: layout.heroHeight,
+          height: composition.heroHeight,
           objectFit: 'cover',
           objectPosition: illustration.objectPosition,
           display: 'block',
           transform: `scale(${concept.imageScale || illustration.scale})`,
-          filter: concept.imageFilter,
+          filter: colours.imageFilter,
         }}
       />
 
@@ -98,8 +103,8 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
       )}
 
       {/* Collector borders */}
-      <div style={{ position: 'absolute', inset: layout.borderInsets[0], border: `1.5px solid ${colours.accent}` }} />
-      {layout.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: layout.borderInsets[1], border: `1px solid ${colours.borderSecondary}` }} />}
+      <div style={{ position: 'absolute', inset: details.borderInsets[0], border: `1.5px solid ${colours.accent}` }} />
+      {details.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: details.borderInsets[1], border: `1px solid ${colours.borderSecondary}` }} />}
 
       {/* Masthead */}
       <div
@@ -115,8 +120,8 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
           ...typography.masthead,
         }}
       >
-        <span>{direction.moods[0] ?? 'Iconic'} · {style.name} Series</span>
-        {content.collectorNumber && <span style={typography.collector}>No. {collector.number} / 500</span>}
+        <span>{details.mastheadLabel}</span>
+        {content.collectorNumber && details.showMastheadNumber && <span style={typography.collector}>No. {collector.number} / 500</span>}
       </div>
 
       {/* Hero title */}
@@ -126,6 +131,7 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
           left: layout.contentInset,
           right: layout.contentInset,
           top: typography.titleTop,
+          textAlign: typography.titleAlign,
           textShadow: style.id === 'editorial' ? '0 2px 12px rgba(238,233,221,.8)' : '0 7px 24px rgba(0,0,0,.9)',
         }}
       >
@@ -144,7 +150,7 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
             ...typography.title,
           }}
         >
-          {typography.titleLines.map((line) => <div key={line}>{line}</div>)}
+          {typography.titleLines.map((line) => <div key={line.text} style={{ fontSize: line.fontSize, fontWeight: line.fontWeight, letterSpacing: line.letterSpacing, lineHeight: line.lineHeight }}>{line.text}</div>)}
         </div>
 
         <div
@@ -158,13 +164,14 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
         </div>
       </div>
 
-      {/* Editorial lower panel */}
-      <div
+      {model.styleId === 'collector' ? (
+        <CollectorInformationZone model={model} colours={colours} typography={typography} composition={composition} details={details} contentInset={layout.contentInset} />
+      ) : <div
         style={{
           position: 'absolute',
           left: layout.contentInset,
           right: layout.contentInset,
-          top: layout.lowerPanelTop,
+          top: composition.lowerPanelTop,
           bottom: 51,
           display: 'grid',
           gridTemplateRows: content.venueFacts ? 'auto auto 1fr auto' : 'auto auto 1fr',
@@ -180,7 +187,7 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: content.historicMoments || content.venueMap || content.compassRose ? layout.storyColumns : '1fr',
+            gridTemplateColumns: content.historicMoments || content.venueMap || content.compassRose ? composition.storyColumns : '1fr',
             gap: 34,
             paddingTop: 26,
             paddingBottom: 24,
@@ -293,7 +300,7 @@ export default function CinematicHeroPoster({ model, presentation = 'preview' }:
             {style.editionLabel}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

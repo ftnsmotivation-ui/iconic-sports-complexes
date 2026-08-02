@@ -11,8 +11,8 @@ const cases = [
   ['Formula 1', 'Circuit de Monaco'],
   ['Football', 'Santiago Bernabéu'],
   ['Cricket', 'Eden Gardens'],
-  ['Golf', 'Old Course at St Andrews'],
-  ['Boxing', 'Madison Square Garden'],
+  ['Tennis', 'All England Lawn Tennis Club'],
+  ['Golf', 'Augusta National Golf Club'],
 ];
 const styles = ['collector', 'editorial', 'atlas'];
 const outputDirectory = path.join(process.cwd(), '.next', 'visual-qa');

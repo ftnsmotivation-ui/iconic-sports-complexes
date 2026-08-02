@@ -5,6 +5,8 @@ import { resolvePosterIllustration, type PosterIllustrationPlan } from "./Poster
 import { resolvePosterPersonalisation, type PosterPersonalisation, type PosterPersonalisationInput } from "./PosterPersonalisation";
 import { resolvePosterHistory, type PosterHistoryItem, type PosterHistorySource } from "./PosterHistory";
 import type { PosterStyleId } from "./PosterStyleProfiles";
+import { resolvePosterVariation, type PosterVariationPlan } from './PosterVariationDirector';
+import { resolveVisualStory, type VisualStoryPlan } from './VisualStoryDirector';
 
 export interface PosterModelSource extends PosterHistorySource {
   venueName: string;
@@ -12,6 +14,8 @@ export interface PosterModelSource extends PosterHistorySource {
   city: string;
   country: string;
   countryFlag?: string;
+  lat?: number | string;
+  lng?: number | string;
   opened: number | string;
   capacity: number | string;
   competition?: string;
@@ -33,6 +37,7 @@ export interface PosterModel {
     country: string;
     countryFlag: string;
     competition: string;
+    coordinates: { lat: number; lng: number } | null;
   };
   facts: {
     opened: string;
@@ -54,6 +59,8 @@ export interface PosterModel {
   content: PosterContentVisibility;
   personalisation: PosterPersonalisation;
   conceptId: PosterConceptId;
+  story: VisualStoryPlan;
+  variation: PosterVariationPlan;
 }
 
 function normalizeCapacity(value: number | string): string {
@@ -62,9 +69,11 @@ function normalizeCapacity(value: number | string): string {
   return Number.isFinite(parsed) ? parsed.toLocaleString() : String(value);
 }
 
-export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector", selectedContent?: readonly PosterContentId[], personalisation?: PosterPersonalisationInput, conceptId: PosterConceptId = 'monument'): PosterModel {
+export function buildPosterModel(source: PosterModelSource, styleId: PosterStyleId = "collector", selectedContent?: readonly PosterContentId[], personalisation?: PosterPersonalisationInput, conceptId: PosterConceptId = 'monument', variationKey = 'primary'): PosterModel {
   const sport = source.sport || "Sporting Venue";
   const direction = resolvePosterDirection(source.venueName);
+  const lat = Number(source.lat);
+  const lng = Number(source.lng);
 
   return {
     identity: {
@@ -74,6 +83,7 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
       country: source.country,
       countryFlag: source.countryFlag || "",
       competition: source.competition || "ICONIC SPORTING VENUE",
+      coordinates: Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null,
     },
     facts: {
       opened: String(source.opened),
@@ -100,5 +110,7 @@ export function buildPosterModel(source: PosterModelSource, styleId: PosterStyle
     content: resolvePosterContent(selectedContent),
     personalisation: resolvePosterPersonalisation(personalisation),
     conceptId,
+    story: resolveVisualStory(direction),
+    variation: resolvePosterVariation(source.venueName, variationKey),
   };
 }

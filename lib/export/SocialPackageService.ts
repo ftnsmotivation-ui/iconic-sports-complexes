@@ -1,5 +1,7 @@
 import { resolvePosterColours } from '@/components/PosterGenerator/PosterColourDirector';
 import { resolvePosterConcept } from '@/components/PosterGenerator/PosterConceptDirector';
+import { resolvePosterComposition } from '@/components/PosterGenerator/PosterCompositionDirector';
+import { resolvePosterLayout } from '@/components/PosterGenerator/PosterLayoutDirector';
 import type { PosterModel } from '@/components/PosterGenerator/PosterModel';
 import { resolvePosterStyle } from '@/components/PosterGenerator/PosterStyleProfiles';
 
@@ -51,7 +53,10 @@ async function rasterize(svgContent: string, profile: PublishingProfile): Promis
 export async function createSocialPackage(model: PosterModel, settings: ExportSettings, onProgress?: (message: string) => void): Promise<ExportArtifact> {
   const root = slug(model.identity.venueName);
   const style = resolvePosterStyle(model.styleId);
-  const colours = resolvePosterColours(model, style, resolvePosterConcept(model.conceptId));
+  const concept = resolvePosterConcept(model.conceptId);
+  const layout = resolvePosterLayout(model.styleId, model.direction, concept.layoutId);
+  const composition = resolvePosterComposition(model, layout);
+  const colours = resolvePosterColours(model, style, concept, composition);
   const master = await renderPosterSvg(model, { ...settings, format: 'svg', dimensionsMm: { width: 203.2, height: 279.4 }, bleedMm: 0, cropMarks: false, safeMarginMm: 0 });
   const entries: { path: string; bytes: Uint8Array }[] = [];
   for (const profile of profiles) {

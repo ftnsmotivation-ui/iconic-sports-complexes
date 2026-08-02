@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const { buildPosterModel } = require('../components/PosterGenerator/PosterModel.ts');
 const { clearStudioDraft, loadStudioDraft, saveStudioDraft } = require('../components/Studio/StudioDraft.ts');
 const { defaultExportSettings } = require('../lib/export/ExportSettings.ts');
+const { prepareSvgForRaster } = require('../lib/export/prepareSvgForRaster.ts');
 const { SvgExportAdapter } = require('../lib/export/SvgExportAdapter.ts');
 
 test('Studio draft survives a save, load, and reset smoke flow', () => {
@@ -29,7 +30,16 @@ test('SVG export produces a standalone vector master and safe filename', async (
     assert.match(svg, /^<\?xml/);
     assert.match(svg, /viewBox="0 0 800 1100"/);
     assert.match(svg, /Test &amp; Arena/);
+    assert.match(svg, /font-family="[^"]+, [^"]+"/);
   } finally {
     global.fetch = originalFetch;
   }
+});
+
+test('raster preparation replaces physical SVG dimensions with the requested pixel canvas', () => {
+  const svg = '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="594mm" viewBox="0 0 800 1100"><rect width="800" height="1100"/></svg>';
+  const prepared = prepareSvgForRaster(svg, 4961, 7016);
+  assert.match(prepared, /<svg width="4961" height="7016"/);
+  assert.doesNotMatch(prepared, /420mm|594mm/);
+  assert.match(prepared, /<rect width="800" height="1100"/);
 });

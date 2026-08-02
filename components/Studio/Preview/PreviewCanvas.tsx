@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
 import type { PosterModel } from "@/components/PosterGenerator/PosterModel";
@@ -8,7 +8,7 @@ import type { StudioStyle } from "../Sidebar/StylePanel";
 import StudioNotice from "../StudioNotice";
 import PreviewToolbar, { type PreviewZoom } from "./PreviewToolbar";
 import ConceptSelector from "./ConceptSelector";
-import { FramePreview, FrameSelector, type PreviewFrameId } from "./FramePreview";
+import { FramePreview, FrameSelector, getPreviewFrameInset, type PreviewFrameId } from "./FramePreview";
 
 interface PreviewCanvasProps {
   posterModel: PosterModel | null;
@@ -25,8 +25,31 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading, sel
   const [showGrid, setShowGrid] = useState(false);
   const [showSafeMargin, setShowSafeMargin] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
+  const [fitWidth, setFitWidth] = useState(0);
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const measure = () => {
+      const styles = window.getComputedStyle(viewport);
+      const horizontalPadding = Number.parseFloat(styles.paddingLeft) + Number.parseFloat(styles.paddingRight);
+      const verticalPadding = Number.parseFloat(styles.paddingTop) + Number.parseFloat(styles.paddingBottom);
+      const frameSize = getPreviewFrameInset(selectedFrame) * 2;
+      const availableWidth = Math.max(0, viewport.clientWidth - horizontalPadding - frameSize);
+      const availableHeight = Math.max(0, viewport.clientHeight - verticalPadding - frameSize);
+      setFitWidth(Math.floor(Math.min(610, availableWidth, availableHeight * 8 / 11)));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, [selectedFrame]);
+
   const canvasWidth = zoom === "fit"
-    ? "min(100%, calc((100vh - 200px) * 8 / 11))"
+    ? `${fitWidth}px`
     : `${610 * zoom}px`;
 
   return (
@@ -50,10 +73,11 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading, sel
           <StudioNotice tone="warning" title="Venue artwork pending" message="A compatible vector illustration is shown for layout review. Add a venue-specific master before production export." />
         </div>
       )}
-      <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
+      <div ref={viewportRef} data-preview-viewport="true" className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
         <div
+          data-preview-poster-stage="true"
           className="relative shrink-0"
-          style={{ width: canvasWidth, maxWidth: zoom === "fit" ? 610 : "none" }}
+          style={{ width: canvasWidth, visibility: zoom === "fit" && fitWidth === 0 ? "hidden" : "visible" }}
         >
           <FramePreview frame={selectedFrame}>
             <div className="relative">

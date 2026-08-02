@@ -9,6 +9,8 @@ function normaliseVenueKey(value: string): string {
   return value
     .trim()
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/&/g, "and")
     .replace(/['’]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
@@ -25,10 +27,15 @@ const venueAliases: Record<string, string> = {
   wimbledon: "wimbledon-centre-court",
   "centre-court": "wimbledon-centre-court",
   "wimbledon-centre-court": "wimbledon-centre-court",
+  "all-england-lawn-tennis-club": "wimbledon-centre-court",
 
   bernabeu: "santiago-bernabeu",
   "santiago-bernabeu-stadium": "santiago-bernabeu",
   "santiago-bernabeu": "santiago-bernabeu",
+
+  augusta: "augusta-national",
+  "augusta-national": "augusta-national",
+  "augusta-national-golf-club": "augusta-national",
 
   "camp-nou": "camp-nou",
   "spotify-camp-nou": "camp-nou",
