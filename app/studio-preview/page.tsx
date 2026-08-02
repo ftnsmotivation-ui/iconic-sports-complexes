@@ -16,11 +16,9 @@ import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
 import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components/Studio/StudioDraft";
 import { defaultExportSettings, type ExportSettings } from "@/lib/export/ExportSettings";
-import { ExportService } from "@/lib/export/ExportService";
-import { SvgExportAdapter } from "@/lib/export/SvgExportAdapter";
 import { downloadArtifact } from "@/lib/export/downloadArtifact";
-import { RasterExportAdapter } from "@/lib/export/RasterExportAdapter";
-import { PdfExportAdapter } from "@/lib/export/PdfExportAdapter";
+import { createStudioExportService } from "@/lib/export/createStudioExportService";
+import { createPrintPackage } from "@/lib/export/PrintPackageService";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
 const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
@@ -148,17 +146,26 @@ export default function StudioPreviewPage() {
     setExporting(true);
     setExportMessage('');
     try {
-      const service = new ExportService();
-      service.register(new SvgExportAdapter());
-      service.register(new RasterExportAdapter('png'));
-      service.register(new RasterExportAdapter('jpeg'));
-      service.register(new PdfExportAdapter());
-      service.register(new RasterExportAdapter('tiff'));
+      const service = createStudioExportService();
       const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
       setExportMessage(error instanceof Error ? error.message : 'Unable to create export.');
+    } finally {
+      setExporting(false);
+    }
+  };
+  const exportPrintPackage = async () => {
+    if (!posterModel) return;
+    setExporting(true);
+    setExportMessage('Starting print package…');
+    try {
+      const artifact = await createPrintPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
+      downloadArtifact(artifact);
+      setExportMessage(`${artifact.filename} is ready.`);
+    } catch (error) {
+      setExportMessage(error instanceof Error ? error.message : 'Unable to create print package.');
     } finally {
       setExporting(false);
     }
@@ -174,7 +181,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} />}
     />
   );
 }

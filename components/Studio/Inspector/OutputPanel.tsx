@@ -9,11 +9,12 @@ interface OutputPanelProps {
   exporting: boolean;
   exportMessage: string;
   onExport: () => void;
+  onExportPrintPackage: () => void;
 }
 
 const sizeLabels: Readonly<Record<Exclude<ExportSizeId, 'custom'>, string>> = { a4: 'A4 Portrait', a3: 'A3 Portrait', a2: 'A2 Portrait', a1: 'A1 Portrait', a0: 'A0 Portrait', '18x24': '18 × 24 inch', '24x36': '24 × 36 inch' };
 
-export default function OutputPanel({ settings, onSettingsChange, onResetStudio, exporting, exportMessage, onExport }: OutputPanelProps) {
+export default function OutputPanel({ settings, onSettingsChange, onResetStudio, exporting, exportMessage, onExport, onExportPrintPackage }: OutputPanelProps) {
   const formatSupported = (settings.format === 'svg' || settings.format === 'png' || settings.format === 'jpeg' || settings.format === 'pdf' || settings.format === 'tiff') && settings.colour.mode === 'rgb';
   const colourValue = settings.colour.mode === 'rgb' ? 'srgb' : settings.colour.profile;
   const changeColour = (value: string) => onSettingsChange({ ...settings, colour: value === 'srgb' ? { mode: 'rgb', profile: 'srgb', conversion: 'native' } : { mode: 'cmyk', profile: value as CmykProfileId, conversion: 'external-required' } });
@@ -46,6 +47,7 @@ export default function OutputPanel({ settings, onSettingsChange, onResetStudio,
         <button type="button" onClick={onResetStudio} className="rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-xs text-white/65 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">Reset Draft</button>
         <button type="button" disabled={!formatSupported || exporting} onClick={onExport} title={formatSupported ? `Download production ${settings.format.toUpperCase()}` : `${settings.format.toUpperCase()} support is introduced in a later sprint.`} className="rounded-lg border border-amber-300/40 bg-amber-300/10 px-3 py-3 text-xs font-semibold text-amber-200 transition hover:bg-amber-300/20 disabled:cursor-not-allowed disabled:opacity-40">{exporting ? 'Preparing…' : `Export ${settings.format.toUpperCase()}`}</button>
       </div>
+      <button type="button" disabled={settings.colour.mode !== 'rgb' || exporting} onClick={onExportPrintPackage} className="mt-3 w-full rounded-lg border border-amber-300/25 bg-amber-300/[.07] px-3 py-3 text-xs font-semibold text-amber-100 transition hover:bg-amber-300/15 disabled:cursor-not-allowed disabled:opacity-40">One-Click Print Package</button>
       {exportMessage && <p role="status" className="mt-3 text-[10px] leading-4 text-white/45">{exportMessage}</p>}
     </>
   );
