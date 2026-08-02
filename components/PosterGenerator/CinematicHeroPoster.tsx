@@ -3,6 +3,7 @@
 import React from 'react';
 
 import type { PosterModel } from './PosterModel';
+import { resolvePosterLayout } from './PosterLayoutDirector';
 import { resolvePosterStyle } from './PosterStyleProfiles';
 
 export interface CinematicHeroPosterProps {
@@ -20,6 +21,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
   const { identity, facts, collector, narrative, artwork, direction } = model;
   const { venueName, city, country, competition } = identity;
   const style = resolvePosterStyle(model.styleId);
+  const layout = resolvePosterLayout(model.styleId, direction);
   const accent = direction.colourPalette[1] ?? style.accent;
   const background = model.styleId === 'collector' ? direction.colourPalette[0] ?? style.background : style.background;
   const foreground = model.styleId === 'collector' ? direction.colourPalette[2] ?? style.foreground : style.foreground;
@@ -32,6 +34,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       data-poster-root="true"
       data-venue-mood={direction.moods.join(',')}
       data-illustration-priority={direction.illustrationPriority}
+      data-poster-layout={layout.id}
       aria-label={`${venueName} collector poster`}
       title={direction.atmosphere}
       style={{
@@ -56,7 +59,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           position: 'absolute',
           inset: 0,
           width: '100%',
-          height: style.heroHeight,
+          height: layout.heroHeight,
           objectFit: 'cover',
           objectPosition: direction.heroObjectPosition,
           display: 'block',
@@ -93,16 +96,16 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       )}
 
       {/* Collector borders */}
-      <div style={{ position: 'absolute', inset: style.borderInsets[0], border: `1.5px solid ${accent}` }} />
-      {style.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: style.borderInsets[1], border: `1px solid ${style.borderSecondary}` }} />}
+      <div style={{ position: 'absolute', inset: layout.borderInsets[0], border: `1.5px solid ${accent}` }} />
+      {layout.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: layout.borderInsets[1], border: `1px solid ${style.borderSecondary}` }} />}
 
       {/* Masthead */}
       <div
         style={{
           position: 'absolute',
           top: 61,
-          left: style.contentInset,
-          right: style.contentInset,
+          left: layout.contentInset,
+          right: layout.contentInset,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -120,9 +123,9 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       <div
         style={{
           position: 'absolute',
-          left: style.contentInset,
-          right: style.contentInset,
-          top: lineTwo ? style.titleTop[0] : style.titleTop[1],
+          left: layout.contentInset,
+          right: layout.contentInset,
+          top: lineTwo ? layout.titleTop[0] : layout.titleTop[1],
           textShadow: style.id === 'editorial' ? '0 2px 12px rgba(238,233,221,.8)' : '0 7px 24px rgba(0,0,0,.9)',
         }}
       >
@@ -142,7 +145,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
           style={{
             fontFamily: direction.titleFont,
             fontWeight: 700,
-            fontSize: (lineOne.length > 13 ? 58 : 72) * style.titleScale,
+            fontSize: (lineOne.length > 13 ? 58 : 72) * layout.titleScale,
             lineHeight: 0.91,
             letterSpacing: '-1.6px',
             textTransform: 'uppercase',
@@ -169,9 +172,9 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
       <div
         style={{
           position: 'absolute',
-          left: style.contentInset,
-          right: style.contentInset,
-          top: style.lowerPanelTop,
+          left: layout.contentInset,
+          right: layout.contentInset,
+          top: layout.lowerPanelTop,
           bottom: 51,
           display: 'grid',
           gridTemplateRows: 'auto auto 1fr auto',
@@ -187,7 +190,7 @@ export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps)
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: style.informationDensity === 'minimal' ? '1fr' : '1.2fr .8fr',
+            gridTemplateColumns: layout.storyColumns,
             gap: 34,
             paddingTop: 26,
             paddingBottom: 24,

@@ -16,12 +16,6 @@ export interface PosterStyleProfile {
   vignette: string;
   titleFont: string;
   bodyFont: string;
-  borderInsets: readonly [number, number];
-  contentInset: number;
-  heroHeight: string;
-  titleTop: readonly [string, string];
-  lowerPanelTop: string;
-  titleScale: number;
   informationDensity: PosterInformationDensity;
   factLimit: number;
   showGrid: boolean;
@@ -44,12 +38,6 @@ export const posterStyleProfiles: Record<PosterStyleId, PosterStyleProfile> = {
     vignette: "radial-gradient(circle at 50% 25%,transparent 0%,transparent 34%,rgba(0,0,0,.18) 64%,rgba(0,0,0,.58) 100%)",
     titleFont: "Georgia, 'Times New Roman', serif",
     bodyFont: "Arial, Helvetica, sans-serif",
-    borderInsets: [27, 39],
-    contentInset: 57,
-    heroHeight: "61%",
-    titleTop: ["39.5%", "43%"],
-    lowerPanelTop: "66.5%",
-    titleScale: 1,
     informationDensity: "balanced",
     factLimit: 4,
     showGrid: false,
@@ -70,12 +58,6 @@ export const posterStyleProfiles: Record<PosterStyleId, PosterStyleProfile> = {
     vignette: "linear-gradient(90deg,rgba(238,233,221,.18),transparent 24%,transparent 76%,rgba(238,233,221,.18))",
     titleFont: "Georgia, 'Times New Roman', serif",
     bodyFont: "Arial, Helvetica, sans-serif",
-    borderInsets: [22, 0],
-    contentInset: 64,
-    heroHeight: "55%",
-    titleTop: ["35%", "39%"],
-    lowerPanelTop: "62%",
-    titleScale: 0.88,
     informationDensity: "minimal",
     factLimit: 3,
     showGrid: false,
@@ -96,12 +78,6 @@ export const posterStyleProfiles: Record<PosterStyleId, PosterStyleProfile> = {
     vignette: "radial-gradient(circle at 50% 24%,transparent 0%,transparent 30%,rgba(11,18,18,.3) 68%,rgba(11,18,18,.64) 100%)",
     titleFont: "Georgia, 'Times New Roman', serif",
     bodyFont: "'Courier New', monospace",
-    borderInsets: [25, 37],
-    contentInset: 54,
-    heroHeight: "60%",
-    titleTop: ["38.5%", "42%"],
-    lowerPanelTop: "65%",
-    titleScale: 0.94,
     informationDensity: "rich",
     factLimit: 4,
     showGrid: true,

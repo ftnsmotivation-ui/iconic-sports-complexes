@@ -11,6 +11,7 @@ export interface PosterDirection {
   heroObjectPosition: string;
   heroFocus: string;
   atmosphere: string;
+  preferredLayouts: readonly string[];
 }
 
 const typographyFonts = {
@@ -45,5 +46,6 @@ export function resolvePosterDirection(venueName: string): PosterDirection {
     heroObjectPosition: heroPositions[dna.illustrationPriority] ?? "center 46%",
     heroFocus: dna.heroFocus,
     atmosphere: dna.atmosphere,
+    preferredLayouts: dna.preferredLayouts,
   };
 }
