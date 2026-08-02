@@ -16,11 +16,18 @@ export interface PosterIllustrationInput {
 
 const EDEN_GARDENS_MASTER = "/venue-assets/eden-gardens/hero-night.svg";
 const MONACO_MASTER = "/venue-assets/circuit-de-monaco/hero-night.svg";
+const BERNABEU_MASTER = "/venue-assets/santiago-bernabeu/hero-night.svg";
+const ST_ANDREWS_MASTER = "/venue-assets/st-andrews/hero-links.svg";
+const MADISON_SQUARE_GARDEN_MASTER = "/venue-assets/madison-square-garden/hero-night.svg";
 
 const venueMasters: Readonly<Record<string, string>> = {
   "eden gardens": EDEN_GARDENS_MASTER,
   "circuit de monaco": MONACO_MASTER,
   "monaco grand prix": MONACO_MASTER,
+  "santiago bernabéu": BERNABEU_MASTER,
+  "santiago bernabeu": BERNABEU_MASTER,
+  "old course at st andrews": ST_ANDREWS_MASTER,
+  "madison square garden": MADISON_SQUARE_GARDEN_MASTER,
 };
 
 const sportFallbacks: Readonly<Record<string, string>> = {

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" role="img" aria-labelledby="title desc">
+  <title id="title">Old Course at St Andrews links study</title>
+  <desc id="desc">Original vector illustration of coastal links, the Swilcan Bridge, dunes and the Royal and Ancient clubhouse.</desc>
+  <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#718e91"/><stop offset=".58" stop-color="#c8b98e"/><stop offset="1" stop-color="#d8cda8"/></linearGradient><linearGradient id="links" x2="0" y2="1"><stop stop-color="#657c50"/><stop offset="1" stop-color="#243e35"/></linearGradient></defs>
+  <rect width="800" height="700" fill="url(#sky)"/>
+  <circle cx="604" cy="126" r="78" fill="#efe0ad" opacity=".42"/>
+  <path d="M0 270c134-34 224-23 344 1 144 29 301-5 456-51v176H0z" fill="#71876a"/>
+  <path d="M0 341c122-62 217-26 312 8 137 48 281-53 488-65v416H0z" fill="url(#links)"/>
+  <path d="M0 470c158-69 258 25 396-18 141-44 239-93 404-72" fill="none" stroke="#a6b579" stroke-width="82" opacity=".45"/>
+  <path d="M80 700c84-210 225-191 322-247 92-53 149-129 321-125" fill="none" stroke="#b7bf87" stroke-width="45" opacity=".45"/>
+  <g transform="translate(86 183)"><path d="M0 89h235V37h-31V7h-32v30h-29V20h-31v17H83V0H53v37H26v52Z" fill="#d8d1b8" stroke="#4c5550" stroke-width="3"/><path d="M-10 93h258" stroke="#a68653" stroke-width="7"/><g fill="#314344"><rect x="23" y="53" width="16" height="23"/><rect x="62" y="53" width="16" height="23"/><rect x="104" y="53" width="16" height="23"/><rect x="151" y="53" width="16" height="23"/><rect x="194" y="53" width="16" height="23"/></g></g>
+  <g transform="translate(382 448)"><path d="M-115 46c25-97 205-97 230 0" fill="none" stroke="#d9d0ae" stroke-width="24"/><path d="M-121 54h242" stroke="#8c8268" stroke-width="8"/><path d="M-91 42c31-59 151-59 182 0" fill="none" stroke="#596856" stroke-width="4"/></g>
+  <path d="M645 372v-112" stroke="#eee4b9" stroke-width="4"/><path d="M649 263l62 19-62 19z" fill="#b33632"/>
+  <path d="M0 625c179-44 313-11 462 18 118 22 217 14 338-16v73H0z" fill="#142d2b"/>
+</svg>

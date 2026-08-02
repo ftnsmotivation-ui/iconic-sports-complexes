@@ -50,6 +50,9 @@ export async function renderPosterSvg(model: PosterModel, settings: ExportSettin
   const inset = layout.contentInset;
   const right = 800 - inset;
   const heroHeight = concept.layoutId === 'editorial-column' ? 605 : concept.layoutId === 'atlas-archive' ? 660 : 671;
+  const heroFadeStops = model.styleId === 'editorial'
+    ? `<stop offset="0" stop-color="${xml(colours.background)}" stop-opacity="0"/><stop offset=".34" stop-color="${xml(colours.background)}" stop-opacity=".18"/><stop offset=".52" stop-color="${xml(colours.background)}" stop-opacity=".92"/><stop offset=".7" stop-color="${xml(colours.background)}" stop-opacity="1"/>`
+    : `<stop offset="0" stop-color="${xml(colours.background)}" stop-opacity="0"/><stop offset=".55" stop-color="${xml(colours.background)}" stop-opacity=".12"/><stop offset="1" stop-color="${xml(colours.background)}" stop-opacity="1"/>`;
   const factLimit = Math.min(style.factLimit, model.direction.informationDensity === 'rich' ? 4 : model.direction.informationDensity === 'balanced' ? 3 : 2);
   const facts = [['Opened', model.facts.opened], ['Capacity', model.facts.capacity], ['Surface', model.facts.surface], ['Architect', model.facts.architect]].slice(0, factLimit);
   const factTop = 910;
@@ -65,7 +68,7 @@ export async function renderPosterSvg(model: PosterModel, settings: ExportSettin
   <desc id="poster-description">Vector artwork prepared by ISC Studio in ${xml(model.styleId)} style.</desc>
   <metadata>format=svg; dpi=${settings.dpi}; colour=${settings.colour.mode}/${settings.colour.profile}; conversion=${settings.colour.conversion}; trim=${settings.dimensionsMm.width}x${settings.dimensionsMm.height}mm</metadata>
   <defs>
-    <linearGradient id="hero-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${xml(colours.background)}" stop-opacity="0"/><stop offset=".55" stop-color="${xml(colours.background)}" stop-opacity=".12"/><stop offset="1" stop-color="${xml(colours.background)}" stop-opacity="1"/></linearGradient>
+    <linearGradient id="hero-fade" x1="0" y1="0" x2="0" y2="1">${heroFadeStops}</linearGradient>
     <radialGradient id="vignette"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".48"/></radialGradient>
     <clipPath id="poster-clip"><rect width="800" height="1100"/></clipPath>
   </defs>

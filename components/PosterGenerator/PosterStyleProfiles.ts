@@ -54,7 +54,7 @@ export const posterStyleProfiles: Record<PosterStyleId, PosterStyleProfile> = {
     accentMuted: "#9b6241",
     border: "#292c2d",
     borderSecondary: "rgba(41,44,45,.2)",
-    heroOverlay: "linear-gradient(180deg,rgba(238,233,221,.02) 0%,rgba(238,233,221,.08) 34%,rgba(238,233,221,.78) 51%,#eee9dd 61%,#eee9dd 100%)",
+    heroOverlay: "linear-gradient(180deg,rgba(238,233,221,.04) 0%,rgba(238,233,221,.16) 28%,rgba(238,233,221,.82) 39%,#eee9dd 54%,#eee9dd 100%)",
     vignette: "linear-gradient(90deg,rgba(238,233,221,.18),transparent 24%,transparent 76%,rgba(238,233,221,.18))",
     titleFont: "Georgia, 'Times New Roman', serif",
     bodyFont: "Arial, Helvetica, sans-serif",

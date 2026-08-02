@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" role="img" aria-labelledby="title desc">
+  <title id="title">Madison Square Garden night study</title>
+  <desc id="desc">Original vector illustration of the circular arena above Manhattan streets with boxing-ring geometry.</desc>
+  <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#080e19"/><stop offset="1" stop-color="#263141"/></linearGradient><linearGradient id="arena" x2="0" y2="1"><stop stop-color="#a99d7c"/><stop offset=".45" stop-color="#554f48"/><stop offset="1" stop-color="#191c22"/></linearGradient><pattern id="windows" width="28" height="20" patternUnits="userSpaceOnUse"><rect x="3" y="4" width="15" height="4" fill="#dacb8e" opacity=".6"/></pattern></defs>
+  <rect width="800" height="700" fill="url(#sky)"/>
+  <g fill="#111a25"><path d="M0 338V110h87v228h38V56h79v282h53V139h67v199h476v173H0z"/><path d="M542 338V91h58v247h35V154h61v184h104v173H526z"/></g>
+  <g fill="url(#windows)" opacity=".65"><rect x="12" y="124" width="72" height="203"/><rect x="135" y="72" width="61" height="249"/><rect x="550" y="105" width="43" height="222"/><rect x="646" y="168" width="47" height="155"/></g>
+  <ellipse cx="400" cy="354" rx="303" ry="110" fill="#1a1c21" stroke="#d1bb71" stroke-width="5"/>
+  <path d="M116 349c23-101 103-151 284-151s261 50 284 151c-82 53-183 78-284 78s-202-25-284-78Z" fill="url(#arena)"/>
+  <path d="M132 320c91 39 179 58 268 58s177-19 268-58" fill="none" stroke="#d7c27c" stroke-width="8"/>
+  <path d="M155 291c86 29 168 43 245 43s159-14 245-43" fill="none" stroke="#eee3bb" stroke-width="3" opacity=".55"/>
+  <g transform="translate(400 425)" fill="none" stroke="#d8c06f"><path d="M-104-50h208v132h-208z" stroke-width="5"/><path d="M-104-33h208M-104 65h208" stroke-width="2"/><path d="M-104-50v132M104-50v132" stroke-width="8"/><circle cx="-104" cy="-50" r="8" fill="#b74035"/><circle cx="104" cy="82" r="8" fill="#3c68a2"/></g>
+  <path d="M0 532h800v168H0z" fill="#0c1119"/><path d="M0 574h800M0 640h800M250 532l-39 168M550 532l39 168" stroke="#d2bf7a" opacity=".38"/>
+  <g fill="#e4d395"><circle cx="105" cy="601" r="4"/><circle cx="175" cy="601" r="4"/><circle cx="625" cy="601" r="4"/><circle cx="695" cy="601" r="4"/></g>
+</svg>

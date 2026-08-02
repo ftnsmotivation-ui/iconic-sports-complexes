@@ -11,6 +11,7 @@
     "desktop:prepare": "node desktop/prepare.cjs",
     "desktop:start": "npm run desktop:prepare && electron desktop/main.cjs",
     "test": "node --require ./scripts/register-typescript.cjs --test tests/*.test.cjs",
+    "qa:visual": "node --require ./scripts/register-typescript.cjs scripts/visual-qa.cjs",
     "lint": "eslint"
   },
   "dependencies": {
