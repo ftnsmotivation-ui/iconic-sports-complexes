@@ -2,10 +2,14 @@
   "name": "iconic-sports-complexes",
   "version": "0.1.0",
   "private": true,
+  "main": "desktop/main.cjs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "desktop:dev": "electron desktop/main.cjs --dev",
+    "desktop:prepare": "node desktop/prepare.cjs",
+    "desktop:start": "npm run desktop:prepare && electron desktop/main.cjs",
     "lint": "eslint"
   },
   "dependencies": {
@@ -27,6 +31,7 @@
     "@types/pdfkit": "^0.17.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "^43.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
