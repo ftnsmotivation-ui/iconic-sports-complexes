@@ -1,6 +1,6 @@
 import { PanelHeading } from "../Sidebar/VenuePanel";
 
-export default function OutputPanel() {
+export default function OutputPanel({ onResetStudio }: { onResetStudio: () => void }) {
   return (
     <>
       <div className="my-7 h-px bg-white/10" />
@@ -24,7 +24,7 @@ export default function OutputPanel() {
         </select>
       </label>
       <div className="mt-6 grid grid-cols-2 gap-3">
-        <button type="button" className="rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-xs text-white/65 transition hover:bg-white/10">Save Draft</button>
+        <button type="button" onClick={onResetStudio} className="rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-xs text-white/65 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">Reset Draft</button>
         <button type="button" className="rounded-lg border border-amber-300/40 bg-amber-300/10 px-3 py-3 text-xs font-semibold text-amber-200 transition hover:bg-amber-300/20">Export</button>
       </div>
     </>

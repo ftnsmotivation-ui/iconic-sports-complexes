@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
 import type { PosterConceptId } from "@/components/PosterGenerator/PosterConceptDirector";
@@ -14,8 +14,10 @@ import StylePanel, { type StudioStyle } from "@/components/Studio/Sidebar/StyleP
 import VenuePanel, { type StudioVenue } from "@/components/Studio/Sidebar/VenuePanel";
 import StudioHeader from "@/components/Studio/StudioHeader";
 import StudioShell from "@/components/Studio/StudioShell";
+import { clearStudioDraft, loadStudioDraft, saveStudioDraft } from "@/components/Studio/StudioDraft";
 
 const sports = ["Formula 1", "Football", "Cricket", "Tennis", "Golf", "Rugby", "Olympic Venues", "Boxing"];
+const defaultParameters: PosterContentId[] = ["venueFacts", "venueMap", "collectorNumber"];
 
 const posterParameters: readonly StudioParameter[] = [
   { id: "venueFacts", label: "Venue facts" },
@@ -33,14 +35,32 @@ export default function StudioPreviewPage() {
   const [competitions, setCompetitions] = useState<string[]>([]);
   const [venues, setVenues] = useState<StudioVenue[]>([]);
   const [selectedStyle, setSelectedStyle] = useState<StudioStyle>("collector");
-  const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(["venueFacts", "venueMap", "collectorNumber"]);
+  const [selectedParameters, setSelectedParameters] = useState<PosterContentId[]>(defaultParameters);
   const [personalisation, setPersonalisation] = useState<PosterPersonalisationInput>(emptyPosterPersonalisation);
   const [selectedConcept, setSelectedConcept] = useState<PosterConceptId>('monument');
   const [selectedFrame, setSelectedFrame] = useState<PreviewFrameId>('none');
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
+  const [draftReady, setDraftReady] = useState(false);
+  const [catalogueRevision, setCatalogueRevision] = useState(0);
+  const restoreTarget = useRef({ competition: '', venueName: '' });
 
   useEffect(() => {
+    const draft = loadStudioDraft();
+    if (draft) {
+      restoreTarget.current = { competition: draft.selectedCompetition, venueName: draft.selectedVenueName };
+      setSelectedSport(sports.includes(draft.selectedSport) ? draft.selectedSport : 'Cricket');
+      setSelectedStyle(draft.selectedStyle);
+      setSelectedParameters(draft.selectedParameters);
+      setPersonalisation(draft.personalisation);
+      setSelectedConcept(draft.selectedConcept);
+      setSelectedFrame(draft.selectedFrame);
+    }
+    setDraftReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!draftReady) return;
     async function loadCompetitions() {
       setLoading(true);
       setCatalogueError("");
@@ -53,7 +73,8 @@ export default function StudioPreviewPage() {
         const data = await response.json();
         const items: string[] = data.competitions ?? [];
         setCompetitions(items);
-        setSelectedCompetition(items[0] ?? "");
+        const restoredCompetition = restoreTarget.current.competition;
+        setSelectedCompetition(items.includes(restoredCompetition) ? restoredCompetition : items[0] ?? "");
       } catch (error) {
         setCatalogueError(error instanceof Error ? error.message : "Unable to load competitions.");
       } finally {
@@ -61,10 +82,10 @@ export default function StudioPreviewPage() {
       }
     }
     void loadCompetitions();
-  }, [selectedSport]);
+  }, [catalogueRevision, draftReady, selectedSport]);
 
   useEffect(() => {
-    if (!selectedCompetition) return;
+    if (!draftReady || !selectedCompetition) return;
     async function loadVenues() {
       setLoading(true);
       setCatalogueError("");
@@ -75,7 +96,9 @@ export default function StudioPreviewPage() {
         const data = await response.json();
         const items: StudioVenue[] = data.venues ?? [];
         setVenues(items);
-        setSelectedVenue(items[0] ?? null);
+        const restoredVenue = restoreTarget.current.venueName;
+        setSelectedVenue(items.find((venue) => venue.venueName === restoredVenue) ?? items[0] ?? null);
+        restoreTarget.current = { competition: '', venueName: '' };
       } catch (error) {
         setCatalogueError(error instanceof Error ? error.message : "Unable to load venues.");
       } finally {
@@ -83,7 +106,28 @@ export default function StudioPreviewPage() {
       }
     }
     void loadVenues();
-  }, [selectedCompetition, selectedSport]);
+  }, [draftReady, selectedCompetition, selectedSport]);
+
+  useEffect(() => {
+    if (!draftReady) return;
+    saveStudioDraft({ version: 1, selectedSport, selectedCompetition, selectedVenueName: selectedVenue?.venueName ?? '', selectedStyle, selectedParameters, personalisation, selectedConcept, selectedFrame });
+  }, [draftReady, personalisation, selectedCompetition, selectedConcept, selectedFrame, selectedParameters, selectedSport, selectedStyle, selectedVenue]);
+
+  const resetStudio = () => {
+    clearStudioDraft();
+    restoreTarget.current = { competition: '', venueName: '' };
+    setSelectedSport('Cricket');
+    setSelectedCompetition('');
+    setSelectedVenue(null);
+    setCompetitions([]);
+    setVenues([]);
+    setSelectedStyle('collector');
+    setSelectedParameters(defaultParameters);
+    setPersonalisation({ ...emptyPosterPersonalisation });
+    setSelectedConcept('monument');
+    setSelectedFrame('none');
+    setCatalogueRevision((current) => current + 1);
+  };
 
   const toggleParameter = (parameter: PosterContentId) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
@@ -100,7 +144,7 @@ export default function StudioPreviewPage() {
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} />}
     />
   );
 }
