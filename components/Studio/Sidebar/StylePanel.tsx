@@ -1,9 +1,10 @@
 import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
+import type { PosterStyleId } from "@/components/PosterGenerator/PosterStyleProfiles";
 
 import { PanelHeading } from "./VenuePanel";
 import type { StudioVenue } from "./VenuePanel";
 
-export type StudioStyle = "collector" | "editorial" | "atlas";
+export type StudioStyle = PosterStyleId;
 
 interface StyleOption {
   id: StudioStyle;

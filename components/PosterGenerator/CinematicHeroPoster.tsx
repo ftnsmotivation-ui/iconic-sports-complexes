@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { resolvePosterStyle, type PosterStyleId } from './PosterStyleProfiles';
+
 export interface CinematicHeroPosterProps {
   venueName: string;
   city: string;
@@ -17,7 +19,7 @@ export interface CinematicHeroPosterProps {
   iconicMoments?: string;
   surface?: string;
   architect?: string;
-  styleId?: string;
+  styleId?: PosterStyleId;
 }
 
 function formatCapacity(value: number | string): string {
@@ -48,7 +50,9 @@ export default function CinematicHeroPoster({
   iconicMoments,
   surface,
   architect,
+  styleId,
 }: CinematicHeroPosterProps) {
+  const style = resolvePosterStyle(styleId);
   const [lineOne, lineTwo] = titleLines(venueName);
   const edition = String(collectorNumber).padStart(3, '0');
   const secondaryStory =
@@ -68,10 +72,10 @@ export default function CinematicHeroPoster({
         margin: '0 auto',
         position: 'relative',
         overflow: 'hidden',
-        background: '#080b0c',
-        color: '#f4efe5',
+        background: style.background,
+        color: style.foreground,
         boxShadow: '0 28px 80px rgba(0,0,0,.52)',
-        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontFamily: style.bodyFont,
       }}
     >
       {/* Hero artwork */}
@@ -83,7 +87,7 @@ export default function CinematicHeroPoster({
           position: 'absolute',
           inset: 0,
           width: '100%',
-          height: '61%',
+          height: style.heroHeight,
           objectFit: 'cover',
           objectPosition: 'center 46%',
           display: 'block',
@@ -96,34 +100,44 @@ export default function CinematicHeroPoster({
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(180deg, rgba(5,8,9,.08) 0%, rgba(5,8,9,.05) 30%, rgba(5,8,9,.48) 49%, #080a0b 62%, #080a0b 100%)',
+          background: style.heroOverlay,
         }}
       />
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'radial-gradient(circle at 50% 25%, transparent 0%, transparent 34%, rgba(0,0,0,.18) 64%, rgba(0,0,0,.58) 100%)',
+          background: style.vignette,
         }}
       />
 
+      {style.showGrid && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.16,
+            backgroundImage: 'linear-gradient(rgba(209,183,122,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(209,183,122,.45) 1px,transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+      )}
+
       {/* Collector borders */}
-      <div style={{ position: 'absolute', inset: 27, border: '1.5px solid #b29248' }} />
-      <div style={{ position: 'absolute', inset: 39, border: '1px solid rgba(178,146,72,.43)' }} />
+      <div style={{ position: 'absolute', inset: style.borderInsets[0], border: `1.5px solid ${style.border}` }} />
+      {style.borderInsets[1] > 0 && <div style={{ position: 'absolute', inset: style.borderInsets[1], border: `1px solid ${style.borderSecondary}` }} />}
 
       {/* Masthead */}
       <div
         style={{
           position: 'absolute',
           top: 61,
-          left: 57,
-          right: 57,
+          left: style.contentInset,
+          right: style.contentInset,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          color: '#dbc270',
+          color: style.accent,
           fontSize: 10,
           letterSpacing: '3.5px',
           textTransform: 'uppercase',
@@ -137,15 +151,15 @@ export default function CinematicHeroPoster({
       <div
         style={{
           position: 'absolute',
-          left: 57,
-          right: 57,
-          top: lineTwo ? '39.5%' : '43%',
-          textShadow: '0 7px 24px rgba(0,0,0,.9)',
+          left: style.contentInset,
+          right: style.contentInset,
+          top: lineTwo ? style.titleTop[0] : style.titleTop[1],
+          textShadow: style.id === 'editorial' ? '0 2px 12px rgba(238,233,221,.8)' : '0 7px 24px rgba(0,0,0,.9)',
         }}
       >
         <div
           style={{
-            color: '#e0c36e',
+            color: style.accent,
             fontSize: 12,
             letterSpacing: '4.2px',
             textTransform: 'uppercase',
@@ -157,9 +171,9 @@ export default function CinematicHeroPoster({
 
         <div
           style={{
-            fontFamily: 'Georgia, "Times New Roman", serif',
+            fontFamily: style.titleFont,
             fontWeight: 700,
-            fontSize: lineOne.length > 13 ? 58 : 72,
+            fontSize: (lineOne.length > 13 ? 58 : 72) * style.titleScale,
             lineHeight: 0.91,
             letterSpacing: '-1.6px',
             textTransform: 'uppercase',
@@ -172,7 +186,7 @@ export default function CinematicHeroPoster({
         <div
           style={{
             marginTop: 19,
-            color: '#e5c978',
+            color: style.accent,
             fontSize: 13,
             letterSpacing: '4px',
             textTransform: 'uppercase',
@@ -186,9 +200,9 @@ export default function CinematicHeroPoster({
       <div
         style={{
           position: 'absolute',
-          left: 57,
-          right: 57,
-          top: '66.5%',
+          left: style.contentInset,
+          right: style.contentInset,
+          top: style.lowerPanelTop,
           bottom: 51,
           display: 'grid',
           gridTemplateRows: 'auto auto 1fr auto',
@@ -197,14 +211,14 @@ export default function CinematicHeroPoster({
         <div
           style={{
             height: 2,
-            background: 'linear-gradient(90deg,#6f5520,#e1c56f,#6f5520)',
+            background: `linear-gradient(90deg,transparent,${style.accent},transparent)`,
           }}
         />
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1.2fr .8fr',
+            gridTemplateColumns: style.informationDensity === 'minimal' ? '1fr' : '1.2fr .8fr',
             gap: 34,
             paddingTop: 26,
             paddingBottom: 24,
@@ -213,7 +227,7 @@ export default function CinematicHeroPoster({
           <div>
             <div
               style={{
-                color: '#bda45e',
+                color: style.accentMuted,
                 fontSize: 10,
                 letterSpacing: '3px',
                 textTransform: 'uppercase',
@@ -224,36 +238,36 @@ export default function CinematicHeroPoster({
             </div>
             <div
               style={{
-                fontFamily: 'Georgia, "Times New Roman", serif',
+                fontFamily: style.titleFont,
                 fontSize: 21,
                 lineHeight: 1.32,
                 fontStyle: 'italic',
-                color: '#f0ece4',
+                color: style.foreground,
               }}
             >
               “{inscription}”
             </div>
           </div>
 
-          <div
+          {style.informationDensity !== 'minimal' && <div
             style={{
-              borderLeft: '1px solid rgba(180,150,76,.42)',
+              borderLeft: `1px solid ${style.borderSecondary}`,
               paddingLeft: 25,
-              color: '#aaa596',
+              color: style.muted,
               fontSize: 11,
               lineHeight: 1.55,
             }}
           >
             {secondaryStory}
-          </div>
+          </div>}
         </div>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            borderTop: '1px solid rgba(180,150,76,.38)',
-            borderBottom: '1px solid rgba(180,150,76,.38)',
+            gridTemplateColumns: `repeat(${style.factLimit}, 1fr)`,
+            borderTop: `1px solid ${style.borderSecondary}`,
+            borderBottom: `1px solid ${style.borderSecondary}`,
           }}
         >
           {[
@@ -261,17 +275,17 @@ export default function CinematicHeroPoster({
             ['Capacity', formatCapacity(capacity)],
             ['Surface', surface || 'International standard'],
             ['Architect', architect || 'Historic development'],
-          ].map(([label, value], index) => (
+          ].slice(0, style.factLimit).map(([label, value], index) => (
             <div
               key={label}
               style={{
                 padding: '19px 16px 18px',
-                borderLeft: index ? '1px solid rgba(180,150,76,.28)' : 'none',
+                borderLeft: index ? `1px solid ${style.borderSecondary}` : 'none',
               }}
             >
               <div
                 style={{
-                  color: '#9b8448',
+                  color: style.accentMuted,
                   fontSize: 8.5,
                   letterSpacing: '2.2px',
                   textTransform: 'uppercase',
@@ -282,8 +296,8 @@ export default function CinematicHeroPoster({
               </div>
               <div
                 style={{
-                  color: '#f1ede5',
-                  fontFamily: 'Georgia, "Times New Roman", serif',
+                  color: style.foreground,
+                  fontFamily: style.titleFont,
                   fontSize: value.length > 18 ? 14 : 20,
                   lineHeight: 1.12,
                 }}
@@ -306,7 +320,7 @@ export default function CinematicHeroPoster({
           <div>
             <div
               style={{
-                color: '#b99c51',
+                color: style.accentMuted,
                 fontSize: 8.5,
                 letterSpacing: '2.7px',
                 textTransform: 'uppercase',
@@ -316,7 +330,7 @@ export default function CinematicHeroPoster({
             </div>
             <div
               style={{
-                color: '#6f654d',
+                color: style.subtle,
                 fontSize: 8,
                 letterSpacing: '1.6px',
                 marginTop: 7,
@@ -330,13 +344,13 @@ export default function CinematicHeroPoster({
           <div
             style={{
               textAlign: 'right',
-              color: '#75643a',
+              color: style.accentMuted,
               fontSize: 8,
               letterSpacing: '2.3px',
               textTransform: 'uppercase',
             }}
           >
-            Cinematic Night Edition
+            {style.editionLabel}
           </div>
         </div>
       </div>
