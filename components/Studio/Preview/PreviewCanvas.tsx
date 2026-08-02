@@ -30,7 +30,7 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading, sel
     : `${610 * zoom}px`;
 
   return (
-    <section className="relative flex min-h-[620px] min-w-0 flex-col bg-[#11151a] lg:min-h-[720px] xl:min-h-0">
+    <section id="studio-preview" aria-label="Live poster preview" tabIndex={-1} className="relative flex min-h-[620px] min-w-0 flex-col bg-[#11151a] outline-none lg:min-h-[720px] xl:min-h-0">
       <PreviewToolbar
         venueName={posterModel?.identity.venueName}
         selectedStyle={selectedStyle}

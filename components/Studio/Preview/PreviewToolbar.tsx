@@ -37,7 +37,7 @@ export default function PreviewToolbar({
           {venueName ?? "No venue selected"} · {selectedStyle}
         </p>
       </div>
-      <div className="flex shrink-0 items-center gap-1.5">
+      <div className="flex shrink-0 items-center gap-1.5" role="toolbar" aria-label="Preview display controls">
         <ToolbarButton label="Fit" active={zoom === "fit"} onClick={() => onZoomChange("fit")} />
         {zoomPresets.map((preset) => (
           <ToolbarButton
@@ -48,8 +48,8 @@ export default function PreviewToolbar({
           />
         ))}
         <span className="mx-1 h-5 w-px bg-white/10" aria-hidden="true" />
-        <ToolbarButton label="Grid" active={showGrid} onClick={onGridToggle} />
-        <ToolbarButton label="Safe" active={showSafeMargin} onClick={onSafeMarginToggle} />
+        <ToolbarButton label="Grid" accessibleLabel="Toggle layout grid" active={showGrid} onClick={onGridToggle} />
+        <ToolbarButton label="Safe" accessibleLabel="Toggle safe margin" active={showSafeMargin} onClick={onSafeMarginToggle} />
         <ToolbarButton label="Guides" active={showGuides} onClick={onGuidesToggle} />
       </div>
     </div>
@@ -58,15 +58,17 @@ export default function PreviewToolbar({
 
 interface ToolbarButtonProps {
   label: string;
+  accessibleLabel?: string;
   active: boolean;
   onClick: () => void;
 }
 
-function ToolbarButton({ label, active, onClick }: ToolbarButtonProps) {
+function ToolbarButton({ label, accessibleLabel, active, onClick }: ToolbarButtonProps) {
   return (
     <button
       type="button"
       aria-pressed={active}
+      aria-label={accessibleLabel ?? label}
       onClick={onClick}
       className={[
         "rounded-md border px-2.5 py-1.5 text-[10px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300",

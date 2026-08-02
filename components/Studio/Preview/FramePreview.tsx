@@ -23,7 +23,7 @@ export function FramePreview({ frame, children }: { frame: PreviewFrameId; child
 
 export function FrameSelector({ selectedFrame, onFrameChange }: { selectedFrame: PreviewFrameId; onFrameChange: (frame: PreviewFrameId) => void }) {
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto border-b border-white/10 bg-[#0d1014] px-4 py-1.5" aria-label="Frame preview">
+    <div className="flex items-center gap-1.5 overflow-x-auto border-b border-white/10 bg-[#0d1014] px-4 py-1.5" role="group" aria-label="Frame preview">
       <span className="mr-1 shrink-0 text-[9px] uppercase tracking-[.18em] text-white/30">Frame</span>
       {(Object.keys(frameProfiles) as PreviewFrameId[]).map((frame) => {
         const profile = frameProfiles[frame];

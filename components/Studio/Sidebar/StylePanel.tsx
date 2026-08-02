@@ -41,7 +41,7 @@ export default function StylePanel({ selectedStyle, posterModel, onStyleChange }
     <>
       <div className="my-7 h-px bg-white/10" />
       <PanelHeading number="02" title="Style" description="Select the visual direction." />
-      <div className="mt-5 space-y-3">
+      <div className="mt-5 space-y-3" role="group" aria-label="Poster style">
         {styleOptions.map((style) => (
           <StyleCard
             key={style.id}
@@ -52,7 +52,7 @@ export default function StylePanel({ selectedStyle, posterModel, onStyleChange }
           />
         ))}
       </div>
-      <button type="button" className="mt-7 w-full rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-[#19150b] transition hover:bg-amber-200">
+      <button type="button" disabled title="The live preview updates automatically" className="mt-7 w-full rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-[#19150b] opacity-60">
         Generate Poster
       </button>
     </>
@@ -71,6 +71,7 @@ function StyleCard({ style, selected, posterModel, onSelect }: StyleCardProps) {
     <button
       type="button"
       aria-pressed={selected}
+      aria-label={`${style.name}: ${style.description}`}
       onClick={() => onSelect(style.id)}
       className={[
         "group w-full rounded-xl border p-2.5 text-left transition duration-200",
@@ -122,7 +123,7 @@ function StyleThumbnail({ style, posterModel }: { style: StudioStyle; posterMode
           <CinematicHeroPoster model={{ ...posterModel, styleId: style }} />
         </span>
       ) : (
-        <span className="absolute inset-2 animate-pulse border border-white/10 bg-white/5" />
+        <span className="absolute inset-2 motion-safe:animate-pulse border border-white/10 bg-white/5" />
       )}
     </span>
   );
