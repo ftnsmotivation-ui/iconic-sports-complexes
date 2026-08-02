@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
+import type { PosterModel } from "@/components/PosterGenerator/PosterModel";
 
 import type { StudioStyle } from "../Sidebar/StylePanel";
-import type { StudioVenue } from "../Sidebar/VenuePanel";
 import PreviewToolbar, { type PreviewZoom } from "./PreviewToolbar";
 
 interface PreviewCanvasProps {
-  selectedVenue: StudioVenue | null;
+  posterModel: PosterModel | null;
   selectedStyle: StudioStyle;
   loading: boolean;
 }
 
-export default function PreviewCanvas({ selectedVenue, selectedStyle, loading }: PreviewCanvasProps) {
+export default function PreviewCanvas({ posterModel, selectedStyle, loading }: PreviewCanvasProps) {
   const [zoom, setZoom] = useState<PreviewZoom>("fit");
   const [showGrid, setShowGrid] = useState(false);
   const [showSafeMargin, setShowSafeMargin] = useState(false);
@@ -24,7 +24,7 @@ export default function PreviewCanvas({ selectedVenue, selectedStyle, loading }:
   return (
     <section className="relative flex min-h-[620px] min-w-0 flex-col bg-[#11151a] lg:min-h-[720px] xl:min-h-0">
       <PreviewToolbar
-        venueName={selectedVenue?.venueName}
+        venueName={posterModel?.identity.venueName}
         selectedStyle={selectedStyle}
         zoom={zoom}
         showGrid={showGrid}
@@ -40,27 +40,14 @@ export default function PreviewCanvas({ selectedVenue, selectedStyle, loading }:
           className="relative shrink-0"
           style={{ width: canvasWidth, maxWidth: zoom === "fit" ? 610 : "none" }}
         >
-          {selectedVenue ? (
-            <CinematicHeroPoster
-              venueName={selectedVenue.venueName}
-              city={selectedVenue.city}
-              country={selectedVenue.country}
-              opened={selectedVenue.opened}
-              capacity={selectedVenue.capacity}
-              competition={selectedVenue.competition}
-              collectorNumber={selectedVenue.collectorNumber ?? 12}
-              inscription={selectedVenue.inscription || selectedVenue.nickname || selectedVenue.famousFor || "Where sporting history becomes part of the city."}
-              heroImageHref={selectedVenue.heroImageHref || "/venue-assets/eden-gardens/hero-night.svg"}
-              surface={selectedVenue.surface || "International standard"}
-              architect={selectedVenue.architect || "Historic development"}
-              styleId={selectedStyle}
-            />
+          {posterModel ? (
+            <CinematicHeroPoster model={posterModel} />
           ) : (
             <div className="flex aspect-[8/11] w-full items-center justify-center border border-white/10 bg-[#0b0e11] text-sm text-white/35">
               {loading ? "Preparing poster…" : "Select an available venue"}
             </div>
           )}
-          {selectedVenue && (
+          {posterModel && (
             <PreviewOverlays grid={showGrid} safeMargin={showSafeMargin} guides={showGuides} />
           )}
         </div>

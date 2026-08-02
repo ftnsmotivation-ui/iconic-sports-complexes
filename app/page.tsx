@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SportSelection from '@/components/SportSelection/SportSelection';
 import PosterDisplay, { PersonalisationData } from '@/components/PosterGenerator/PosterDisplay';
 import CinematicHeroPoster from '@/components/PosterGenerator/CinematicHeroPoster';
+import { buildPosterModel } from '@/components/PosterGenerator/PosterModel';
 import PreviewFrame, { ExportOptions } from '@/components/PreviewFrame/PreviewFrame';
 import ParameterSelection from '@/components/ParameterSelection/ParameterSelection';
 import StyleSelection from '@/components/StyleSelection/StyleSelection';
@@ -408,20 +409,12 @@ export default function Home() {
         <PreviewFrame
           posterComponent={
            <CinematicHeroPoster
-  venueName={selectedVenue.venueName}
-  city={selectedVenue.city}
-  country={selectedVenue.country}
-  opened={selectedVenue.opened}
-  capacity={selectedVenue.capacity}
-  competition={selectedVenue.competition}
-  collectorNumber={selectedVenue.collectorNumber}
-  inscription={
-    (selectedVenue.collectorInscription as string | undefined) ||
-    (selectedVenue.nickname as string | undefined) ||
-    'Where sporting history becomes part of the city.'
-  }
-  heroImageHref="/venue-assets/eden-gardens/hero-night.svg"
-/> 
+             model={buildPosterModel({
+               ...selectedVenue,
+               collectorInscription: selectedVenue.collectorInscription as string | undefined,
+               heroImageHref: '/venue-assets/eden-gardens/hero-night.svg',
+             })}
+           />
           }
           onBack={handleBackToPersonalisation}
           onExport={handleExport}

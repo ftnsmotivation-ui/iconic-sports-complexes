@@ -1,8 +1,8 @@
 import CinematicHeroPoster from "@/components/PosterGenerator/CinematicHeroPoster";
+import type { PosterModel } from "@/components/PosterGenerator/PosterModel";
 import type { PosterStyleId } from "@/components/PosterGenerator/PosterStyleProfiles";
 
 import { PanelHeading } from "./VenuePanel";
-import type { StudioVenue } from "./VenuePanel";
 
 export type StudioStyle = PosterStyleId;
 
@@ -14,7 +14,7 @@ interface StyleOption {
 
 interface StylePanelProps {
   selectedStyle: StudioStyle;
-  selectedVenue: StudioVenue | null;
+  posterModel: PosterModel | null;
   onStyleChange: (style: StudioStyle) => void;
 }
 
@@ -36,7 +36,7 @@ const styleOptions: readonly StyleOption[] = [
   },
 ];
 
-export default function StylePanel({ selectedStyle, selectedVenue, onStyleChange }: StylePanelProps) {
+export default function StylePanel({ selectedStyle, posterModel, onStyleChange }: StylePanelProps) {
   return (
     <>
       <div className="my-7 h-px bg-white/10" />
@@ -47,7 +47,7 @@ export default function StylePanel({ selectedStyle, selectedVenue, onStyleChange
             key={style.id}
             style={style}
             selected={selectedStyle === style.id}
-            venue={selectedVenue}
+            posterModel={posterModel}
             onSelect={onStyleChange}
           />
         ))}
@@ -62,11 +62,11 @@ export default function StylePanel({ selectedStyle, selectedVenue, onStyleChange
 interface StyleCardProps {
   style: StyleOption;
   selected: boolean;
-  venue: StudioVenue | null;
+  posterModel: PosterModel | null;
   onSelect: (style: StudioStyle) => void;
 }
 
-function StyleCard({ style, selected, venue, onSelect }: StyleCardProps) {
+function StyleCard({ style, selected, posterModel, onSelect }: StyleCardProps) {
   return (
     <button
       type="button"
@@ -81,7 +81,7 @@ function StyleCard({ style, selected, venue, onSelect }: StyleCardProps) {
       ].join(" ")}
     >
       <div className="flex items-center gap-3">
-        <StyleThumbnail style={style.id} venue={venue} />
+        <StyleThumbnail style={style.id} posterModel={posterModel} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className={selected ? "text-sm font-semibold text-amber-200" : "text-sm font-semibold text-white/80"}>
@@ -108,31 +108,18 @@ function StyleCard({ style, selected, venue, onSelect }: StyleCardProps) {
   );
 }
 
-function StyleThumbnail({ style, venue }: { style: StudioStyle; venue: StudioVenue | null }) {
+function StyleThumbnail({ style, posterModel }: { style: StudioStyle; posterModel: PosterModel | null }) {
   return (
     <span
       aria-hidden="true"
       className="relative block h-[68px] w-[48px] shrink-0 overflow-hidden rounded-sm border border-white/15 bg-[#080b0c] shadow-lg"
     >
-      {venue ? (
+      {posterModel ? (
         <span
           className="pointer-events-none absolute left-0 top-0 block h-[1100px] w-[800px] origin-top-left"
           style={{ transform: "scale(0.06)" }}
         >
-          <CinematicHeroPoster
-            venueName={venue.venueName}
-            city={venue.city}
-            country={venue.country}
-            opened={venue.opened}
-            capacity={venue.capacity}
-            competition={venue.competition}
-            collectorNumber={venue.collectorNumber ?? 12}
-            inscription={venue.inscription || venue.nickname || venue.famousFor || "Where sporting history becomes part of the city."}
-            heroImageHref={venue.heroImageHref || "/venue-assets/eden-gardens/hero-night.svg"}
-            surface={venue.surface || "International standard"}
-            architect={venue.architect || "Historic development"}
-            styleId={style}
-          />
+          <CinematicHeroPoster model={{ ...posterModel, styleId: style }} />
         </span>
       ) : (
         <span className="absolute inset-2 animate-pulse border border-white/10 bg-white/5" />

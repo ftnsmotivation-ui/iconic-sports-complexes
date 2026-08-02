@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { buildPosterModel } from "@/components/PosterGenerator/PosterModel";
 import VenueInspector from "@/components/Studio/Inspector/VenueInspector";
 import PreviewCanvas from "@/components/Studio/Preview/PreviewCanvas";
 import StylePanel, { type StudioStyle } from "@/components/Studio/Sidebar/StylePanel";
@@ -72,6 +73,7 @@ export default function StudioPreviewPage() {
   const toggleParameter = (parameter: string) => {
     setSelectedParameters((current) => current.includes(parameter) ? current.filter((item) => item !== parameter) : [...current, parameter]);
   };
+  const posterModel = selectedVenue ? buildPosterModel(selectedVenue, selectedStyle) : null;
 
   return (
     <StudioShell
@@ -79,10 +81,10 @@ export default function StudioPreviewPage() {
       sidebar={(
         <>
           <VenuePanel sports={sports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} />
-          <StylePanel selectedStyle={selectedStyle} selectedVenue={selectedVenue} onStyleChange={setSelectedStyle} />
+          <StylePanel selectedStyle={selectedStyle} posterModel={posterModel} onStyleChange={setSelectedStyle} />
         </>
       )}
-      preview={<PreviewCanvas selectedVenue={selectedVenue} selectedStyle={selectedStyle} loading={loading} />}
+      preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} />}
       inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} />}
     />
   );

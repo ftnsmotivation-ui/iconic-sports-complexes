@@ -2,30 +2,11 @@
 
 import React from 'react';
 
-import { resolvePosterStyle, type PosterStyleId } from './PosterStyleProfiles';
+import type { PosterModel } from './PosterModel';
+import { resolvePosterStyle } from './PosterStyleProfiles';
 
 export interface CinematicHeroPosterProps {
-  venueName: string;
-  city: string;
-  country: string;
-  opened: number | string;
-  capacity: number | string;
-  competition?: string;
-  collectorNumber?: number | string;
-  inscription?: string;
-  heroImageHref?: string;
-  nickname?: string;
-  famousFor?: string;
-  iconicMoments?: string;
-  surface?: string;
-  architect?: string;
-  styleId?: PosterStyleId;
-}
-
-function formatCapacity(value: number | string): string {
-  if (typeof value === 'number') return value.toLocaleString();
-  const parsed = Number(String(value).replace(/,/g, ''));
-  return Number.isFinite(parsed) ? parsed.toLocaleString() : String(value);
+  model: PosterModel;
 }
 
 function titleLines(title: string): [string, string?] {
@@ -35,31 +16,11 @@ function titleLines(title: string): [string, string?] {
   return [words.slice(0, split).join(' '), words.slice(split).join(' ')];
 }
 
-export default function CinematicHeroPoster({
-  venueName,
-  city,
-  country,
-  opened,
-  capacity,
-  competition = 'ICONIC SPORTING VENUE',
-  collectorNumber = 12,
-  inscription = 'Where sporting history becomes part of the city.',
-  heroImageHref = '/venue-assets/eden-gardens/hero-night.svg',
-  nickname,
-  famousFor,
-  iconicMoments,
-  surface,
-  architect,
-  styleId,
-}: CinematicHeroPosterProps) {
-  const style = resolvePosterStyle(styleId);
+export default function CinematicHeroPoster({ model }: CinematicHeroPosterProps) {
+  const { identity, facts, collector, narrative, artwork } = model;
+  const { venueName, city, country, competition } = identity;
+  const style = resolvePosterStyle(model.styleId);
   const [lineOne, lineTwo] = titleLines(venueName);
-  const edition = String(collectorNumber).padStart(3, '0');
-  const secondaryStory =
-    iconicMoments ||
-    famousFor ||
-    nickname ||
-    'A stage where generations gathered, records fell and sporting memory became civic history.';
 
   return (
     <div
@@ -80,7 +41,7 @@ export default function CinematicHeroPoster({
     >
       {/* Hero artwork */}
       <img
-        src={heroImageHref}
+        src={artwork.heroImageHref}
         alt=""
         draggable={false}
         style={{
@@ -144,7 +105,7 @@ export default function CinematicHeroPoster({
         }}
       >
         <span>Iconic Sports Complexes · Archive Series</span>
-        <span style={{ letterSpacing: '1.8px' }}>No. {edition} / 500</span>
+        <span style={{ letterSpacing: '1.8px' }}>No. {collector.number} / 500</span>
       </div>
 
       {/* Hero title */}
@@ -245,7 +206,7 @@ export default function CinematicHeroPoster({
                 color: style.foreground,
               }}
             >
-              “{inscription}”
+              “{collector.inscription}”
             </div>
           </div>
 
@@ -258,7 +219,7 @@ export default function CinematicHeroPoster({
               lineHeight: 1.55,
             }}
           >
-            {secondaryStory}
+            {narrative.secondaryStory}
           </div>}
         </div>
 
@@ -271,10 +232,10 @@ export default function CinematicHeroPoster({
           }}
         >
           {[
-            ['Opened', String(opened)],
-            ['Capacity', formatCapacity(capacity)],
-            ['Surface', surface || 'International standard'],
-            ['Architect', architect || 'Historic development'],
+            ['Opened', facts.opened],
+            ['Capacity', facts.capacity],
+            ['Surface', facts.surface],
+            ['Architect', facts.architect],
           ].slice(0, style.factLimit).map(([label, value], index) => (
             <div
               key={label}
