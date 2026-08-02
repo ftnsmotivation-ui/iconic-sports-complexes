@@ -36,6 +36,16 @@ const posterParameters: readonly StudioParameter[] = [
   { id: "collectorNumber", label: "Collector number" },
 ];
 
+async function responseError(response: Response, fallback: string): Promise<string> {
+  try {
+    const body = await response.json() as { error?: unknown; details?: unknown };
+    const summary = typeof body.error === 'string' ? body.error : fallback;
+    return typeof body.details === 'string' ? `${summary}: ${body.details}` : summary;
+  } catch {
+    return fallback;
+  }
+}
+
 export default function StudioPreviewPage() {
   const [selectedSport, setSelectedSport] = useState("Cricket");
   const [availableSports, setAvailableSports] = useState<string[]>(initialSports);
@@ -50,11 +60,13 @@ export default function StudioPreviewPage() {
   const [selectedFrame, setSelectedFrame] = useState<PreviewFrameId>('none');
   const [loading, setLoading] = useState(false);
   const [catalogueError, setCatalogueError] = useState("");
+  const [sportsError, setSportsError] = useState("");
   const [draftReady, setDraftReady] = useState(false);
   const [catalogueRevision, setCatalogueRevision] = useState(0);
   const [exportSettings, setExportSettings] = useState<ExportSettings>(defaultExportSettings);
   const [exporting, setExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState('');
+  const [exportFailed, setExportFailed] = useState(false);
   const restoreTarget = useRef({ competition: '', venueName: '' });
 
   useEffect(() => {
@@ -73,8 +85,12 @@ export default function StudioPreviewPage() {
 
   useEffect(() => {
     if (!draftReady) return;
-    void fetch('/api/sports').then((response) => response.ok ? response.json() : null).then((data) => { if (data?.sports) setAvailableSports(data.sports); }).catch(() => undefined);
-  }, [draftReady]);
+    setSportsError('');
+    void fetch('/api/sports').then(async (response) => {
+      if (!response.ok) throw new Error(await responseError(response, 'Unable to read the venue workbook'));
+      return response.json();
+    }).then((data) => { if (data?.sports) setAvailableSports(data.sports); }).catch((error) => setSportsError(error instanceof Error ? error.message : 'Unable to read the venue workbook.'));
+  }, [catalogueRevision, draftReady]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -86,7 +102,7 @@ export default function StudioPreviewPage() {
       setVenues([]);
       try {
         const response = await fetch(`/api/competitions?sport=${encodeURIComponent(selectedSport)}`);
-        if (!response.ok) throw new Error("Unable to load competitions.");
+        if (!response.ok) throw new Error(await responseError(response, "Unable to load competitions"));
         const data = await response.json();
         const items: string[] = data.competitions ?? [];
         setCompetitions(items);
@@ -109,7 +125,7 @@ export default function StudioPreviewPage() {
       setSelectedVenue(null);
       try {
         const response = await fetch(`/api/venues?sport=${encodeURIComponent(selectedSport)}&competition=${encodeURIComponent(selectedCompetition)}`);
-        if (!response.ok) throw new Error("Unable to load venues.");
+        if (!response.ok) throw new Error(await responseError(response, "Unable to load venues"));
         const data = await response.json();
         const items: StudioVenue[] = data.venues ?? [];
         setVenues(items);
@@ -168,12 +184,14 @@ export default function StudioPreviewPage() {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('');
+    setExportFailed(false);
     try {
       const service = createStudioExportService();
       const artifact = await service.create({ model: posterModel, settings: exportSettings, filename: posterModel.identity.venueName });
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
+      setExportFailed(true);
       setExportMessage(error instanceof Error ? error.message : 'Unable to create export.');
     } finally {
       setExporting(false);
@@ -183,11 +201,13 @@ export default function StudioPreviewPage() {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('Starting print package…');
+    setExportFailed(false);
     try {
       const artifact = await createPrintPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
+      setExportFailed(true);
       setExportMessage(error instanceof Error ? error.message : 'Unable to create print package.');
     } finally {
       setExporting(false);
@@ -197,11 +217,13 @@ export default function StudioPreviewPage() {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('Starting Etsy package…');
+    setExportFailed(false);
     try {
       const artifact = await createEtsyPackage(createStudioExportService(), posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
+      setExportFailed(true);
       setExportMessage(error instanceof Error ? error.message : 'Unable to create Etsy package.');
     } finally {
       setExporting(false);
@@ -211,11 +233,13 @@ export default function StudioPreviewPage() {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('Starting social and web package…');
+    setExportFailed(false);
     try {
       const artifact = await createSocialPackage(posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
+      setExportFailed(true);
       setExportMessage(error instanceof Error ? error.message : 'Unable to create social package.');
     } finally {
       setExporting(false);
@@ -225,11 +249,13 @@ export default function StudioPreviewPage() {
     if (!posterModel) return;
     setExporting(true);
     setExportMessage('Starting marketing mockups…');
+    setExportFailed(false);
     try {
       const artifact = await createMarketingMockups(posterModel, exportSettings, setExportMessage);
       downloadArtifact(artifact);
       setExportMessage(`${artifact.filename} is ready.`);
     } catch (error) {
+      setExportFailed(true);
       setExportMessage(error instanceof Error ? error.message : 'Unable to create marketing mockups.');
     } finally {
       setExporting(false);
@@ -241,12 +267,12 @@ export default function StudioPreviewPage() {
       header={<StudioHeader />}
       sidebar={(
         <>
-          <VenuePanel sports={availableSports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} onAddSport={addSport} />
+          <VenuePanel sports={availableSports} selectedSport={selectedSport} selectedCompetition={selectedCompetition} selectedVenue={selectedVenue} competitions={competitions} venues={venues} loading={loading} catalogueError={sportsError || catalogueError} onSportChange={setSelectedSport} onCompetitionChange={setSelectedCompetition} onVenueChange={setSelectedVenue} onAddSport={addSport} onRetryCatalogue={() => setCatalogueRevision((current) => current + 1)} />
           <StylePanel selectedStyle={selectedStyle} posterModel={posterModel} onStyleChange={setSelectedStyle} />
         </>
       )}
       preview={<PreviewCanvas posterModel={posterModel} selectedStyle={selectedStyle} loading={loading} selectedConcept={selectedConcept} onConceptChange={setSelectedConcept} selectedFrame={selectedFrame} onFrameChange={setSelectedFrame} />}
-      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} onExportEtsyPackage={() => void exportEtsyPackage()} onExportSocialPackage={() => void exportSocialPackage()} onExportMarketingMockups={() => void exportMarketingMockups()} />}
+      inspector={<VenueInspector parameters={posterParameters} selectedParameters={selectedParameters} onToggleParameter={toggleParameter} personalisation={personalisation} onPersonalisationChange={setPersonalisation} onResetStudio={resetStudio} exportSettings={exportSettings} onExportSettingsChange={setExportSettings} exporting={exporting} exportMessage={exportMessage} exportFailed={exportFailed} onExport={() => void exportPoster()} onExportPrintPackage={() => void exportPrintPackage()} onExportEtsyPackage={() => void exportEtsyPackage()} onExportSocialPackage={() => void exportSocialPackage()} onExportMarketingMockups={() => void exportMarketingMockups()} />}
     />
   );
 }

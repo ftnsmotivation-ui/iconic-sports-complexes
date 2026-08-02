@@ -1,4 +1,5 @@
 import type { SportEnrichmentInput } from '@/lib/database/SportEnrichmentTypes';
+import StudioNotice from '../StudioNotice';
 import SportEnrichmentPanel from './SportEnrichmentPanel';
 
 export interface StudioVenue {
@@ -33,6 +34,7 @@ interface VenuePanelProps {
   onCompetitionChange: (competition: string) => void;
   onVenueChange: (venue: StudioVenue | null) => void;
   onAddSport: (input: SportEnrichmentInput) => Promise<string | null>;
+  onRetryCatalogue: () => void;
 }
 
 export function PanelHeading({
@@ -68,6 +70,7 @@ export default function VenuePanel({
   onCompetitionChange,
   onVenueChange,
   onAddSport,
+  onRetryCatalogue,
 }: VenuePanelProps) {
   return (
     <>
@@ -91,7 +94,7 @@ export default function VenuePanel({
           {venues.length === 0 ? <option value="">No venues available</option> : venues.map((venue) => <option key={venue.venueName} value={venue.venueName}>{venue.venueName}</option>)}
         </select>
       </label>
-      {catalogueError && <p className="mt-4 rounded-lg border border-red-400/20 bg-red-400/10 p-3 text-xs text-red-200">{catalogueError}</p>}
+      {catalogueError && <div className="mt-4"><StudioNotice tone="error" title="Catalogue unavailable" message={catalogueError} actionLabel="Try again" onAction={onRetryCatalogue} /></div>}
       {selectedVenue && (
         <div className="mt-4 grid grid-cols-2 gap-3">
           <ReadOnlyField label="City" value={selectedVenue.city} />

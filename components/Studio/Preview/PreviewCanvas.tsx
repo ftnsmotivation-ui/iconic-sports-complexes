@@ -5,6 +5,7 @@ import type { PosterModel } from "@/components/PosterGenerator/PosterModel";
 import type { PosterConceptId } from "@/components/PosterGenerator/PosterConceptDirector";
 
 import type { StudioStyle } from "../Sidebar/StylePanel";
+import StudioNotice from "../StudioNotice";
 import PreviewToolbar, { type PreviewZoom } from "./PreviewToolbar";
 import ConceptSelector from "./ConceptSelector";
 import { FramePreview, FrameSelector, type PreviewFrameId } from "./FramePreview";
@@ -44,6 +45,11 @@ export default function PreviewCanvas({ posterModel, selectedStyle, loading, sel
       />
       <ConceptSelector posterModel={posterModel} selectedConcept={selectedConcept} onConceptChange={onConceptChange}/>
       <FrameSelector selectedFrame={selectedFrame} onFrameChange={onFrameChange}/>
+      {posterModel?.illustration.strategy === 'compatibility-fallback' && (
+        <div className="border-b border-white/10 bg-[#0d1014] px-4 py-2">
+          <StudioNotice tone="warning" title="Venue artwork pending" message="A compatible vector illustration is shown for layout review. Add a venue-specific master before production export." />
+        </div>
+      )}
       <div className="flex flex-1 items-center justify-center overflow-auto bg-[radial-gradient(circle_at_center,#252b33_0%,#15191e_55%,#0e1115_100%)] p-4 sm:p-6 2xl:p-10">
         <div
           className="relative shrink-0"
